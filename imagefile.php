@@ -26,35 +26,34 @@
 require_once('../../../config.php');
 global $CFG;
 $source  = required_param('source', PARAM_RAW);
-$userid  = required_param('userid', PARAM_INT);
+$user_id  = required_param('userid', PARAM_INT);
 
 require_login();
 
-if (!empty($source) && !empty($userid)) {
-    $imagedata = $source;
-    $userid = $userid;
+if (!empty($source) && !empty($user_id)) {
+    $image_data = $source;
     if (!file_exists($CFG->dirroot.'/grade/report/quizanalytics/images/')) {
         mkdir($CFG->dirroot.'/grade/report/quizanalytics/images/', 0755, true);
     }
-    if (!file_exists($CFG->dirroot.'/grade/report/quizanalytics/images/'.$userid)) {
-        mkdir($CFG->dirroot.'/grade/report/quizanalytics/images/'.$userid, 0755, true);
+    if (!file_exists($CFG->dirroot.'/grade/report/quizanalytics/images/'.$user_id)) {
+        mkdir($CFG->dirroot.'/grade/report/quizanalytics/images/'.$user_id, 0755, true);
     }
-    $oldfiles = glob($CFG->dirroot.'/grade/report/quizanalytics/images/'.$userid.'/*');
-    foreach ($oldfiles as $file) {
+    $old_files = glob($CFG->dirroot.'/grade/report/quizanalytics/images/'.$user_id.'/*');
+    foreach ($old_files as $file) {
         if (is_file($file)) {
             unlink($file);
         }
     }
-    $filtereddata = substr($imagedata, strpos($imagedata, ",") + 1);
-    $unencodeddata = base64_decode($filtereddata);
-    $filename = '/'.rand().".png";
-    $filepath = $CFG->dirroot.'/grade/report/quizanalytics/images/'.$userid.$filename;
-    $fileurl = $CFG->wwwroot.'/grade/report/quizanalytics/images/'.$userid.$filename;
-    if (file_exists($filepath)) {
-        unlink($filepath);
+    $filtered_data = substr($image_data, strpos($image_data, ",") + 1);
+    $unencoded_data = base64_decode($filtered_data);
+    $file_name = '/'.rand().".png";
+    $file_path = $CFG->dirroot.'/grade/report/quizanalytics/images/'.$user_id.$file_name;
+    $file_url = $CFG->wwwroot.'/grade/report/quizanalytics/images/'.$user_id.$file_name;
+    if (file_exists($file_path)) {
+        unlink($file_path);
     }
-    $fp = fopen( $filepath, 'wb' );
-    fwrite( $fp, $unencodeddata);
+    $fp = fopen( $file_path, 'wb' );
+    fwrite( $fp, $unencoded_data);
     fclose( $fp );
-    echo $fileurl;
+    echo $file_url;
 }
