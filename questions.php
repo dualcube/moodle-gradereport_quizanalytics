@@ -28,16 +28,16 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 $url = new moodle_url('/grade/report/quizanalytics/questions.php');
 $quiz_id  = required_param('quizid', PARAM_INT);
 $question_id  = required_param('quesid', PARAM_INT);
-
-$PAGE->set_url($url);
+//set url of the page
+$PAGE->set_url($url);    
 $PAGE->set_context(context_system::instance());
-
+//requires login
 require_login();
 
 $output = $PAGE->get_renderer('mod_quiz');
-
+//Getting a single database record from quiz table where id = $quiz_id
 $quiz = $DB->get_record('quiz', array('id' => $quiz_id));
-
+//Getting how many questions attempted
 $attempt = $DB->get_record_sql("SELECT quizatt.id, quizatt.uniqueid
             FROM {quiz_attempts} quizatt WHERE quizatt.state = 'finished'
             AND quizatt.sumgrades IS NOT NULL AND quizatt.quiz = ? AND
@@ -47,7 +47,7 @@ $display_options = mod_quiz_display_options::make_from_quiz($quiz,
             mod_quiz_display_options::AFTER_CLOSE);
 
 $attempt_obj = quiz_attempt::create($attempt->id);
-
+//Getting a single database record from quiz_slot table where questionid = $question_id and quizid = $quiz->id
 $quiz_slot = $DB->get_record('quiz_slots', array('questionid' => $question_id, 'quizid' => $quiz->id));
 
 echo $output->review_page($attempt_obj, array($quiz_slot->slot), 0, 1, 1, $display_options, array());
