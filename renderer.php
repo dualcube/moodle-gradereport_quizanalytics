@@ -40,16 +40,16 @@ class gradereport_quizanalytics_renderer extends plugin_renderer_base {
     /**
      * @param string $report
      * @param int $course id of the course
-     * @param int $userid id of the currently selected user (or 'all' if they are all selected)
-     * @param int $groupid id of requested group, 0 means all
-     * @param int $includeall bool include all option
+     * @param int $user_id id of the currently selected user (or 'all' if they are all selected)
+     * @param int $group_id id of requested group, 0 means all
+     * @param int $include_all bool include all option
      *
      * Return graded users.
      */
-    public function graded_users_selector($report, $course, $userid, $groupid, $includeall) {
+    public function graded_users_selector($report, $course, $user_id, $group_id, $include_all) {
         global $USER;
 
-        $select = grade_get_graded_users_select($report, $course, $userid, $groupid, $includeall);
+        $select = grade_get_graded_users_select($report, $course, $user_id, $group_id, $include_all);
         $output = html_writer::tag('div', $this->output->render($select), array('id' => 'graded_users_selector'));
         $output .= html_writer::tag('p', '', array('style' => 'page-break-after: always;'));
 
