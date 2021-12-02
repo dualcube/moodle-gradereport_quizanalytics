@@ -27,10 +27,10 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
 
-$courseid = required_param('id', PARAM_INT);
-$userid   = optional_param('userid', $USER->id, PARAM_INT);
+$course_id = required_param('id', PARAM_INT);
+$user_id   = optional_param('userid', $USER->id, PARAM_INT);
 
-$PAGE->set_url(new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $courseid)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $course_id)));
 $PAGE->requires->css('/grade/report/quizanalytics/css/styles.css', true);
 $PAGE->requires->css('/grade/report/quizanalytics/css/bootstrap.min.css', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/jquery.min.js', true);
@@ -53,8 +53,8 @@ if ($CFG->gradereport_quizanalytics_fbappid != 'Empty') {
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    var siteurl = "<?php echo $CFG->wwwroot; ?>";
-    var fbtitle = "<?php echo $CFG->gradereport_quizanalytics_fbsharetitle; ?>";
+    var site_url = "<?php echo $CFG->wwwroot; ?>";
+    var fb_title = "<?php echo $CFG->gradereport_quizanalytics_fbsharetitle; ?>";
 </script>
 <?php }
 $PAGE->requires->js('/grade/report/quizanalytics/js/bootstrap.min.js', true);
@@ -62,11 +62,11 @@ $PAGE->requires->js('/grade/report/quizanalytics/js/Chart.js', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/analytics.js', true);
 
 $page = optional_param('page', 0, PARAM_INT);
-$perpage = optional_param('perpage', 5, PARAM_INT);  // How many per page.
-$baseurl = new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $courseid, 'perpage' => $perpage));
+$per_page = optional_param('perpage', 5, PARAM_INT);  // How many per page.
+$base_url = new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $course_id, 'perpage' => $per_page));
 
 // Basic access checks.
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = $DB->get_record('course', array('id' => $course_id))) {
     print_error('nocourseid');
 }
 require_login($course);
@@ -75,11 +75,11 @@ $PAGE->set_pagelayout('report');
 $context = context_course::instance($course->id);
 require_capability('gradereport/quizanalytics:view', $context);
 
-if (empty($userid)) {
+if (empty($user_id)) {
     require_capability('moodle/grade:viewall', $context);
 
 } else {
-    if (!$DB->get_record('user', array('id' => $userid, 'deleted' => 0)) or isguestuser($userid)) {
+    if (!$DB->get_record('user', array('id' => $user_id, 'deleted' => 0)) or isguestuser($user_id)) {
         print_error('invaliduser');
     }
 }
@@ -89,21 +89,21 @@ if (has_capability('moodle/grade:viewall', $context)) {
     // Ok - can view all course grades.
     $access = true;
 
-} else if ($userid == $USER->id and has_capability('moodle/grade:view', $context) and $course->showgrades) {
+} else if ($user_id == $USER->id and has_capability('moodle/grade:view', $context) and $course->showgrades) {
     // Ok - can view own grades.
     $access = true;
 
-} else if (has_capability('moodle/grade:viewall', context_user::instance($userid)) and $course->showgrades) {
+} else if (has_capability('moodle/grade:viewall', context_user::instance($user_id)) and $course->showgrades) {
     // Ok - can view grades of this quizanalytics- parent most probably.
     $access = true;
 }
 
 if (!$access) {
     // No access to grades!
-    print_error('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$courseid);
+    print_error('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$course_id);
 }
 
-$gpr = new grade_plugin_return(array('type' => 'report', 'plugin' => 'overview', 'courseid' => $course->id, 'userid' => $userid));
+$gpr = new grade_plugin_return(array('type' => 'report', 'plugin' => 'overview', 'courseid' => $course->id, 'userid' => $user_id));
 
 if (!isset($USER->grade_last_report)) {
     $USER->grade_last_report = array();
@@ -111,30 +111,30 @@ if (!isset($USER->grade_last_report)) {
 $USER->grade_last_report[$course->id] = 'overview';
 
 // First make sure we have proper final grades - this must be done before constructing of the grade tree.
-grade_regrade_final_grades($courseid);
+grade_regrade_final_grades($course_id);
 
 // Print the page.
-print_grade_page_head($courseid, 'report', 'quizanalytics',
+print_grade_page_head($course_id, 'report', 'quizanalytics',
     get_string('pluginname', 'gradereport_quizanalytics'). ' - '.$USER->firstname
     .' '.$USER->lastname);
 
-$qanalyticsformatoptions = new stdClass();
-$qanalyticsformatoptions->noclean = true;
-$qanalyticsformatoptions->overflowdiv = false;
+$q_analytics_format_options = new stdClass();
+$q_analytics_format_options->noclean = true;
+$q_analytics_format_options->overflowdiv = false;
 
-$getquiz = array();
-$getquizrec = array();
-$quizcount = 0;
-$getquizrecords = $DB->get_records('quiz', array('course' => $courseid));
-if (isset($getquizrecords)) {
-    $quizcount = count($getquizrecords);
-    $getquizrec = array_chunk($getquizrecords, $perpage);
+$get_quiz = array();
+$get_quiz_rec = array();
+$quiz_count = 0;
+$get_quiz_records = $DB->get_records('quiz', array('course' => $course_id));
+if (isset($get_quiz_records)) {
+    $quiz_count = count($get_quiz_records);
+    $get_quiz_rec = array_chunk($get_quiz_records, $per_page);
 }
-if (!empty($getquizrec)) {
-    $getquiz = $getquizrec[$page];
+if (!empty($get_quiz_rec)) {
+    $get_quiz = $get_quiz_rec[$page];
 }
 
-if (!$getquiz) {
+if (!$get_quiz) {
     echo $OUTPUT->heading(get_string('noquizfound', 'gradereport_quizanalytics'));
     $table = null;
 } else {
@@ -144,32 +144,32 @@ if (!$getquiz) {
     $table->head[] = get_string('noofattempts', 'gradereport_quizanalytics');
     $table->head[] = get_string('action', 'gradereport_quizanalytics');
 
-    foreach ($getquiz as $getquizkey => $getquizval) {
-        $getquizattemptsnotgraded = $DB->get_records_sql("SELECT * FROM {quiz_attempts}
-        WHERE state = 'finished' AND sumgrades IS NULL AND quiz = ? AND userid = ?", array($getquizval->id, $USER->id));
+    foreach ($get_quiz as $get_quiz_key => $get_quiz_val) {
+        $get_quiz_attempts_not_graded = $DB->get_records_sql("SELECT * FROM {quiz_attempts}
+        WHERE state = 'finished' AND sumgrades IS NULL AND quiz = ? AND userid = ?", array($get_quiz_val->id, $USER->id));
 
-        $getquizattempts = $DB->get_records('quiz_attempts', array('quiz' => $getquizval->id,
+        $get_quiz_attempts = $DB->get_records('quiz_attempts', array('quiz' => $get_quiz_val->id,
             'userid' => $USER->id, 'state' => 'finished'));
 
-        $getmoduleid = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm,
+        $get_module_id = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm,
             {modules} m, {quiz} q WHERE m.name = 'quiz' AND cm.module = m.id
-            AND cm.course = q.course AND cm.instance = q.id AND q.id = ?", array($getquizval->id));
-        if (isset($getmoduleid)) {
-            $quizviewurl = $CFG->wwwroot."/mod/quiz/view.php?id=".$getmoduleid->id;
+            AND cm.course = q.course AND cm.instance = q.id AND q.id = ?", array($get_quiz_val->id));
+        if (isset($get_module_id)) {
+            $quiz_view_url = $CFG->wwwroot."/mod/quiz/view.php?id=".$get_module_id->id;
         } else {
-            $quizviewurl = "#";
+            $quiz_view_url = "#";
         }
 
         $row = array ();
-        $row[] = "<a href='".$quizviewurl."'>".format_text($getquizval->name, "", $qanalyticsformatoptions)."</a>";
-        $row[] = count($getquizattempts);
-        if (count($getquizattemptsnotgraded) == count($getquizattempts)) {
+        $row[] = "<a href='".$quiz_view_url."'>".format_text($get_quiz_val->name, "", $q_analytics_format_options)."</a>";
+        $row[] = count($get_quiz_attempts);
+        if (count($get_quiz_attempts_not_graded) == count($get_quiz_attempts)) {
             $row[] = get_string('notgraded', 'gradereport_quizanalytics');
         } else {
             $row[] = "<a href='#' id='fetchdata' class='fetchdata'
             data-url='".$CFG->wwwroot."/grade/report/quizanalytics/fetchdata.php'
-            data-user_id='".$USER->id."' data-quize_id='".$getquizval->id."'
-            data-course_id='".$courseid."'>"
+            data-user_id='".$USER->id."' data-quize_id='".$get_quiz_val->id."'
+            data-course_id='".$course_id."'>"
             .get_string('viewanalytics', 'gradereport_quizanalytics')."</a>";
         }
         $table->data[] = $row;
@@ -180,7 +180,7 @@ if (!empty($table)) {
     echo html_writer::start_tag('div', array('class' => 'no-overflow display-table'));
     echo html_writer::table($table);
     echo html_writer::end_tag('div');
-    echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
+    echo $OUTPUT->paging_bar($quiz_count, $page, $per_page, $base_url);
 }
 
 $html = '<div class="showanalytics">
