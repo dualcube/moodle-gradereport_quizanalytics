@@ -65,7 +65,7 @@ $page = optional_param('page', 0, PARAM_INT);
 $per_page = optional_param('perpage', 5, PARAM_INT);  // How many per page.
 $base_url = new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $course_id, 'perpage' => $per_page));
 
-// Basic access checks.
+// Basic access checks
 if (!$course = $DB->get_record('course', array('id' => $course_id))) {
     print_error('nocourseid');
 }
