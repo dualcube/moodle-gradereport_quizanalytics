@@ -45,15 +45,11 @@ if (!empty($quiz_id)) {
                   AND qs.quizid = ? AND q.qtype != ?", array($quiz_id, 'description'));
 
     if (!empty($users_graded_attempts)) {
-        /**
-         * Return the part of random color.
-         */
+         // Return the part of random color.
         function random_color_part() {
             return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
         }
-        /**
-         * Return the random color.
-         */
+         // Return the random color.
         function random_color() {
             return random_color_part() . random_color_part() . random_color_part();
         }
@@ -108,7 +104,7 @@ if (!empty($quiz_id)) {
             $loggdin_user_hardness[] = round($users_hardness, 2);
         }
 
-        /* questionpercat */
+        // questionpercat 
         $question_per_cat_data = array('labels' => $cat_name, 'datasets' => array(array('label'
             => get_string('questionspercategory', 'gradereport_quizanalytics'),
             'backgroundColor' => $random_cat_color, 'data' => $cat_data)));
@@ -117,7 +113,7 @@ if (!empty($quiz_id)) {
             'position' => 'bottom', 'labels' => array('boxWidth' => 13)), 'title' => array('display' => true,
             'position' => 'bottom', 'text' => get_string('questionspercategory', 'gradereport_quizanalytics')));
 
-        /* allusers */
+        // allusers 
         arsort($overall_hardness);
         $max_hardness_keys = array_keys($overall_hardness, max($overall_hardness));
 
@@ -154,7 +150,7 @@ if (!empty($quiz_id)) {
             'position' => 'bottom'), 'title' => array('display' => false,
             'position' => 'bottom', 'text' => get_string('hardcatalluser', 'gradereport_quizanalytics')));
 
-        /* loggedinuser */
+        // loggedinuser 
         arsort($loggdin_user_hardness);
         $max_loggdin_user_hardness_keys = array_keys($loggdin_user_hardness, max($loggdin_user_hardness));
 
@@ -191,7 +187,7 @@ if (!empty($quiz_id)) {
           'position' => 'bottom'), 'title' => array('display' => false,
           'position' => 'bottom', 'text' => get_string('hardcatlogginuser', 'gradereport_quizanalytics')));
 
-        /* lastattemptsummary */
+        // lastattemptsummary 
         $last_attempt_id = $DB->get_record_sql("SELECT quizatt.id FROM {quiz_attempts} quizatt
         WHERE quizatt.state = 'finished' AND quizatt.sumgrades IS NOT NULL
         AND quizatt.quiz = ? AND quizatt.userid= ?
@@ -269,7 +265,7 @@ if (!empty($quiz_id)) {
             $last_attempt_summary_opt = array();
         }
 
-        /* attemptssnapshot */
+        // attemptssnapshot
         $attempt_sql = "SELECT COUNT(qatt.questionid) as num
                     FROM {quiz_attempts} quizatt, {question_attempts} qatt,
                     {question_attempt_steps} qattstep, {question} q
@@ -347,7 +343,7 @@ if (!empty($quiz_id)) {
         }
 
 
-        /* timechart */
+        // timechart 
         if ($quiz->attempts == 1) {
             $scores = array();
             $score_data = array();
@@ -379,7 +375,7 @@ if (!empty($quiz_id)) {
             $timechart_opt = array();
         }
 
-        /* mixchart */
+        // mixchart
 		$total_nth_attempt = array();
         $total_nth_attempt = array();
 
@@ -447,7 +443,7 @@ if (!empty($quiz_id)) {
         'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
 
 
-        /* gradeanalysis */
+        // gradeanalysis 
         $grade_analysis_lables = array();
         $random_color = array();
         $grade_analysis_data_array = array();
@@ -499,7 +495,7 @@ if (!empty($quiz_id)) {
         'legend' => array('display' => false, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
 
 
-        /* quesanalysis */
+        // quesanalysis 
         $total_questions = $DB->get_records_sql("SELECT qs.questionid, q.qtype
         FROM {quiz_slots} qs, {question} q WHERE q.id = qs.questionid AND
         qs.quizid= ? AND q.qtype != ?", array($quiz_id, 'description'));
@@ -604,7 +600,7 @@ if (!empty($quiz_id)) {
         'labels' => array('boxWidth' => 13)),
         'barPercentage' => 1.0, 'categoryPercentage' => 1.0);
 
-        /*Quesanalysis*/
+        // Quesanalysis
         $ques_analysis_data = array('labels' => $ques_labels, 'datasets' => array(
         array('data' => $correct_response, 'borderColor' => "#3e95cd", 'fill' => false,
         'label' => get_string('correct', 'gradereport_quizanalytics')),
