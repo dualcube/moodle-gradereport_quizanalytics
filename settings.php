@@ -26,28 +26,28 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    //set cutoff percentage
+    // set cutoff percentage
     $settings->add(new admin_setting_configtext('gradereport_quizanalytics_cutoff',
         get_string('setcutoff', 'gradereport_quizanalytics'),
         get_string('cutoffdes', 'gradereport_quizanalytics'), 40, PARAM_INT));
-    //set global
+    // set global
     $settings->add(new admin_setting_configcheckbox('gradereport_quizanalytics_globalboundary',
         get_string('setglobal', 'gradereport_quizanalytics'),
         get_string('setglobaldes', 'gradereport_quizanalytics'), 1));
-    //set grade boundary
+    // set grade boundary
     $settings->add(new admin_setting_configtextarea('gradereport_quizanalytics_gradeboundary',
         get_string('gradeboundary', 'gradereport_quizanalytics'),
         get_string('gradeboundarydes', 'gradereport_quizanalytics'),
         '0-60, 61-70, 71-80, 81-90, 91-100'));
-    //Enter fb app id
+    // Enter fb app id
     $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbappid',
         get_string('enterfbappid', 'gradereport_quizanalytics'),
         get_string('fbappiddes', 'gradereport_quizanalytics'), 'Empty'));
-    //Enter API version
+    // Enter API version
     $settings->add(new admin_setting_configtext('gradereport_quizanalytics_apiversion',
         get_string('apiversion', 'gradereport_quizanalytics'),
         get_string('apiversiondes', 'gradereport_quizanalytics'), 'Empty'));
-    //Enter title
+    // Enter title
     $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
         get_string('fbsharetitle', 'gradereport_quizanalytics'),
         get_string('fbsharetitledes', 'gradereport_quizanalytics'), 'Title'));
