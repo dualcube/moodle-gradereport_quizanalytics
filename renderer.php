@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Custom renderer for the gradebook quizanalytics report
  *
  * To get an instance of this use the following code:
