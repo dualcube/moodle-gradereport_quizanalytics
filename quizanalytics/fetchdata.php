@@ -59,8 +59,8 @@ if (!empty($quizid)) {
         }
 
         $catdetails = $DB->get_records_sql("SELECT qc.id, COUNT(qs.id) as qnum,
-        qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc
-        WHERE q.id = qs.id AND 
+        qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_bank_entries} qbe
+        WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND
         qs.quizid = ? AND q.qtype != ? GROUP BY qc.id", array($quizid, 'description'));
 
         $catname = array();
