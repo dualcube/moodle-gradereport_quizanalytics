@@ -58,20 +58,8 @@ In the graphical analysis it has four types of graphs:-
 Settings Instructions:
 
 Go to Site administration -> Grades -> Report settings -> Quiz Analytics
-here you can Set Cut Off for all the quizes of the course, can set Grade Boundary and
-add Facebook App ID, Facebook API version and Title to share the graph on Facebook.
+here you can Set Cut Off for all the quizes of the course, can set Grade Boundary 
 
-To Create Facebook App ID:
-
-1. Login to Facebook.
-2. Click on Manage Apps from left side bar.
-3. Add an App by clicking on the "Add a New App" button.
-    You can see API Version, App ID in Dashboard page.
-4. Click on Settings link from left side bar then fill up all the required fields and
-    add one platform by clicking on the "Add Platform" choose "Website" After that
-    click on the "Save Changes" button.
-5. Click on App Review from left side bar, click on the space to the left side of "No"
-    to make your app public.
 
 Installation:
 
