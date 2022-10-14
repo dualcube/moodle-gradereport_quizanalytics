@@ -72,17 +72,17 @@ if (!empty($quizid)) {
         $totalwrongattemts = array();
         foreach ($catdetails as $catdetail) {
             $catname[] = $catdetail->name;
-            $catdata[] = $catdetail->qnum;
+            $catdata[] = ($catdetail->qnum)/10;
             $randomcatcolor[] = "#".random_color();
 
             $sqlattempt = "SELECT qattstep.id as qattstepid, quizatt.id as quizattid,
             qatt.questionid, qattstep.state, qattstep.sequencenumber
             FROM {quiz_attempts} quizatt, {question_attempts} qatt,
-            {question_attempt_steps} qattstep, {question} q, {question_categories} qc
-            WHERE 
+            {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe
+            WHERE qatt.questionusageid = quizatt.uniqueid AND
             qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid
-            AND  quizatt.quiz = ? AND
-            q.qtype  = ? AND q.qtype != ?";
+            AND  qbe.questioncategoryid = qc.id AND quizatt.quiz = ? AND
+            qattstep.questionattemptid  = ? AND q.qtype != ?";
 
             $totalcorrectattempts = $DB->get_records_sql($sqlattempt." AND
             qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR

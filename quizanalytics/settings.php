@@ -39,20 +39,16 @@ if ($ADMIN->fulltree) {
         get_string('gradeboundarydes', 'gradereport_quizanalytics'),
         '0-60, 61-70, 71-80, 81-90, 91-100'));
 
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbappid',
-        get_string('enterfbappid', 'gradereport_quizanalytics'),
-        get_string('fbappiddes', 'gradereport_quizanalytics'), 'Empty'));
+    // $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbappid',
+    //     get_string('enterfbappid', 'gradereport_quizanalytics'),
+    //     get_string('fbappiddes', 'gradereport_quizanalytics'), 'Empty'));
 
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_apiversion',
-        get_string('apiversion', 'gradereport_quizanalytics'),
-        get_string('apiversiondes', 'gradereport_quizanalytics'), 'Empty'));
+    // $settings->add(new admin_setting_configtext('gradereport_quizanalytics_apiversion',
+    //     get_string('apiversion', 'gradereport_quizanalytics'),
+    //     get_string('apiversiondes', 'gradereport_quizanalytics'), 'Empty'));
 
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
-        get_string('fbsharetitle', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledes', 'gradereport_quizanalytics'), 'Title'));
-
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
-        get_string('fbsharetitle', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledes', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledefault', 'gradereport_quizanalytics')));
+    // $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
+    //     get_string('fbsharetitle', 'gradereport_quizanalytics'),
+    //     get_string('fbsharetitledes', 'gradereport_quizanalytics'),
+    //     get_string('fbsharetitledefault', 'gradereport_quizanalytics')));
 }
