@@ -74,7 +74,7 @@
   vertical-align: top;
   cursor: pointer;
 }
-.shareBtn {
+/*.shareBtn {
   display: inline-block;
   background: #f8f8f8 url(images/fbshare.jpg) center center no-repeat;
   height: 35px;
@@ -84,7 +84,7 @@
   line-height: 30px;
   border-radius: 10px;
   cursor: pointer;
-}
+}*/
 .downloadandshare {
   position: absolute;
   top: 15px;
