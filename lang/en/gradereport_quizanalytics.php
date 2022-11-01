@@ -96,4 +96,3 @@ $string['tab4subtab1'] = 'Scores by Percentage (All Users)';
 $string['gradeanalysisdes'] = 'Number of users in each percentage (score percentage) group.';
 $string['timetaken'] = 'Attempts Snapshot (Time Taken: ';
 $string['quesananalysisdes'] = 'The curves here depict how the users fared in each question. Clicking on the circles dedicated to each question will show the question itself along with explanation and correct answer.';
-$string['cancelled_form'] = 'cancel';
