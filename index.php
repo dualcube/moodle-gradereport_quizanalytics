@@ -34,29 +34,7 @@ $PAGE->set_url(new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.p
 $PAGE->requires->css('/grade/report/quizanalytics/css/styles.css', true);
 $PAGE->requires->css('/grade/report/quizanalytics/css/bootstrap.min.css', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/jquery.min.js', true);
-if ($CFG->gradereport_quizanalytics_fbappid != 'Empty') {
-?>
-<script type="text/javascript">
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId      : <?php echo $CFG->gradereport_quizanalytics_fbappid; ?>,
-            xfbml      : true,
-            version    : "<?php echo $CFG->gradereport_quizanalytics_apiversion; ?>"
-        });
-    };
 
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-    var siteurl = "<?php echo $CFG->wwwroot; ?>";
-    var fbtitle = "<?php echo $CFG->gradereport_quizanalytics_fbsharetitle; ?>";
-</script>
-<?php }
 $PAGE->requires->js('/grade/report/quizanalytics/js/bootstrap.min.js', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/Chart.js', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/analytics.js', true);
@@ -167,7 +145,7 @@ if (!$getquiz) {
             $row[] = get_string('notgraded', 'gradereport_quizanalytics');
         } else {
             $row[] = "<a href='#' id='fetchdata' class='fetchdata'
-            data-url='".$CFG->wwwroot."/grade/report/quizanalytics/fetchdata.php'
+            data-url='".$CFG->wwwroot."/grade/report/quizanalytics/ajax_handler.php'
             data-user_id='".$USER->id."' data-quize_id='".$getquizval->id."'
             data-course_id='".$courseid."'>"
             .get_string('viewanalytics', 'gradereport_quizanalytics')."</a>";
