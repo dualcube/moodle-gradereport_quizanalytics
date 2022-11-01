@@ -22,15 +22,8 @@
  * @copyright Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once('../../../config.php');
-
-global $DB, $USER, $PAGE, $CFG;
-$quizid  = required_param('quiz', PARAM_INT);
-
-require_login();
-
-if (!empty($quizid)) {
+function fetchdata($quizid){
+    global $DB, $USER, $PAGE, $CFG;
     $quiz = $DB->get_record('quiz', array('id' => $quizid));
 
     $attemptssql = "SELECT * FROM {quiz_attempts}
@@ -59,9 +52,9 @@ if (!empty($quizid)) {
         }
 
         $catdetails = $DB->get_records_sql("SELECT qc.id, COUNT(qs.id) as qnum,
-        qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_bank_entries} qbe
-        WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND
-        qs.quizid = ? AND q.qtype != ? GROUP BY qc.id", array($quizid, 'description'));
+            qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_bank_entries} qbe
+            WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND
+            qs.quizid = ? AND q.qtype != ? GROUP BY qc.id", array($quizid, 'description'));
 
         $catname = array();
         $catdata = array();
@@ -193,24 +186,24 @@ if (!empty($quizid)) {
 
         /* lastattemptsummary */
         $lastattemptid = $DB->get_record_sql("SELECT quizatt.id FROM {quiz_attempts} quizatt
-        WHERE quizatt.state = 'finished' AND quizatt.sumgrades IS NOT NULL
-        AND quizatt.quiz = ? AND quizatt.userid= ?
-        ORDER BY quizatt.id DESC LIMIT 1", array($quizid, $USER->id));
+            WHERE quizatt.state = 'finished' AND quizatt.sumgrades IS NOT NULL
+            AND quizatt.quiz = ? AND quizatt.userid= ?
+            ORDER BY quizatt.id DESC LIMIT 1", array($quizid, $USER->id));
 
         $attemptdetailssql = "SELECT qatt.questionid, qattstep.state, qattstep.fraction,
-        qatt.maxmark FROM {quiz_attempts} quizatt, {question_attempts} qatt,
-        {question_attempt_steps} qattstep WHERE qatt.questionusageid = quizatt.uniqueid
-        AND qattstep.questionattemptid = qatt.id AND quizatt.userid = ?
-        AND quizatt.id = ? AND quizatt.quiz = ?";
+            qatt.maxmark FROM {quiz_attempts} quizatt, {question_attempts} qatt,
+            {question_attempt_steps} qattstep WHERE qatt.questionusageid = quizatt.uniqueid
+            AND qattstep.questionattemptid = qatt.id AND quizatt.userid = ?
+            AND quizatt.id = ? AND quizatt.quiz = ?";
 
         $totalattempted = $DB->get_records_sql($attemptdetailssql."
             AND qattstep.sequencenumber = 2", array($USER->id, $lastattemptid->id, $quizid));
 
         $rightattempt = $DB->get_records_sql($attemptdetailssql." AND (qattstep.state =
-        'gradedright' OR qattstep.state = 'mangrright')", array($USER->id, $lastattemptid->id, $quizid));
+            'gradedright' OR qattstep.state = 'mangrright')", array($USER->id, $lastattemptid->id, $quizid));
 
         $partialcorrectattempt = $DB->get_records_sql($attemptdetailssql."
-        AND (qattstep.state = 'gradedpartial' OR qattstep.state = 'mangrpartial')", array($USER->id, $lastattemptid->id, $quizid));
+            AND (qattstep.state = 'gradedpartial' OR qattstep.state = 'mangrpartial')", array($USER->id, $lastattemptid->id, $quizid));
 
         $userscores = array();
         $quesmarks = array();
@@ -387,7 +380,7 @@ if (!empty($quizid)) {
         $gradetopass = ($quiz->sumgrades * $CFG->gradereport_quizanalytics_cutoff) / 100;
 
         $attempttorichcutoff = $DB->get_records_sql($attemptssql."
-        AND sumgrades >= ? GROUP BY userid", array($quizid, $gradetopass));
+            AND sumgrades >= ? GROUP BY userid", array($quizid, $gradetopass));
 
         foreach ($attempttorichcutoff as $torichcutoff) {
             $totalnthattempt[] = $torichcutoff->attempt;
@@ -404,7 +397,7 @@ if (!empty($quizid)) {
         }
 
         $usersattempts = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE
-        state = 'finished' AND quiz = ? AND userid = ?", array($quizid, $USER->id));
+            state = 'finished' AND quiz = ? AND userid = ?", array($quizid, $USER->id));
 
         if (!empty($usersattempts)) {
             $attemptnum = array(0);
@@ -444,8 +437,8 @@ if (!empty($quizid)) {
             );
 
         $mixchartopt = array('title' => array('display' => true, 'position' => 'bottom',
-        'text' => get_string('impandpredicanalysis', 'gradereport_quizanalytics')),
-        'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
+            'text' => get_string('impandpredicanalysis', 'gradereport_quizanalytics')),
+            'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
 
 
         /* gradeanalysis */
@@ -492,18 +485,18 @@ if (!empty($quizid)) {
         }
 
         $gradeanalysisdata = array('labels' => $gradeanalysislables, 'datasets' => array(
-        array('label' => get_string('noofstudents', 'gradereport_quizanalytics'),
-        'backgroundColor' => $randomcolor, 'data' => $gradeanalysisdataarray)));
+            array('label' => get_string('noofstudents', 'gradereport_quizanalytics'),
+            'backgroundColor' => $randomcolor, 'data' => $gradeanalysisdataarray)));
 
         $gradeanalysisopt = array('title' => array('display' => true,
-        'text' => get_string('noofstudents', 'gradereport_quizanalytics'), 'position' => 'bottom'),
-        'legend' => array('display' => false, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
+            'text' => get_string('noofstudents', 'gradereport_quizanalytics'), 'position' => 'bottom'),
+            'legend' => array('display' => false, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
 
 
         /* quesanalysis */
         $totalquestions = $DB->get_records_sql("SELECT qs.id, q.qtype
-        FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND
-        qs.quizid= ? AND q.qtype != ?", array($quizid, 'description'));
+            FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND
+            qs.quizid= ? AND q.qtype != ?", array($quizid, 'description'));
 
         $totalunattempted = array();
         $correctresponse = array();
@@ -599,25 +592,20 @@ if (!empty($quizid)) {
             array('label' => get_string('wrongandunattemptd', 'gradereport_quizanalytics'),
             'backgroundColor' => "#EB2838", 'data' => $wrongandunattemptdata)));
 
-        $hardestquesopt = array('title' => array('display' => false,
-        'text' => get_string('hardestquestion', 'gradereport_quizanalytics')),
-        'legend' => array('display' => true, 'position' => 'bottom',
-        'labels' => array('boxWidth' => 13)),
-        'barPercentage' => 1.0, 'categoryPercentage' => 1.0);
+        $hardestquesopt = array('title' => array('display' => false,'text' => get_string('hardestquestion', 'gradereport_quizanalytics')),'legend' => array('display' => true, 'position' => 'bottom','labels' => array('boxWidth' => 13)),'barPercentage' => 1.0, 'categoryPercentage' => 1.0);
 
         /*Quesanalysis*/
         $quesanalysisdata = array('labels' => $queslabels, 'datasets' => array(
-        array('data' => $correctresponse, 'borderColor' => "#3e95cd", 'fill' => false,
-        'label' => get_string('correct', 'gradereport_quizanalytics')),
-        array('data' => $incorrectresponse, 'borderColor' => "#8e5ea2", 'fill' => false,
-        'label' => get_string('incorrect', 'gradereport_quizanalytics')),
-        array('data' => $partialcorrectresponse, 'borderColor' => "#3cba9f",
-        'fill' => false, 'label' => get_string('partialcorrect', 'gradereport_quizanalytics')),
-        array('data' => $totalunattempted, 'borderColor' => "#c45850", 'fill' => false,
-        'label' => get_string('unattempted', 'gradereport_quizanalytics'))));
+            array('data' => $correctresponse, 'borderColor' => "#3e95cd", 'fill' => false,
+            'label' => get_string('correct', 'gradereport_quizanalytics')),
+            array('data' => $incorrectresponse, 'borderColor' => "#8e5ea2", 'fill' => false,
+            'label' => get_string('incorrect', 'gradereport_quizanalytics')),
+            array('data' => $partialcorrectresponse, 'borderColor' => "#3cba9f",
+            'fill' => false, 'label' => get_string('partialcorrect', 'gradereport_quizanalytics')),
+            array('data' => $totalunattempted, 'borderColor' => "#c45850", 'fill' => false,
+            'label' => get_string('unattempted', 'gradereport_quizanalytics'))));
 
-        $quesanalysisopt = array('title' => array('display' => false),
-        'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
+        $quesanalysisopt = array('title' => array('display' => false),'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
 
         $totalarray = array();
         $totalarray = array(
@@ -667,7 +655,9 @@ if (!empty($quizid)) {
                   'quizid' => $quizid,
                   'url' => $CFG->wwwroot
                   );
-        $totalvalue = json_encode($totalarray);
-        echo $totalvalue;
+         $totalvalue= json_encode($totalarray);
+         return $totalvalue;
+     
     }
 }
+

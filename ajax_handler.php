@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines site settings for the quizanalytics gradebook report
+ * The gradebook quizanalytics report
  *
  * @package   gradereport_quizanalytics
  * @author Moumita Adak <moumita.a@dualcube.com>
@@ -23,20 +23,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+require_once('../../../config.php');
+require_once('lib.php');
 
-if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_cutoff',
-        get_string('setcutoff', 'gradereport_quizanalytics'),
-        get_string('cutoffdes', 'gradereport_quizanalytics'), 40, PARAM_INT));
+global $DB, $USER, $PAGE, $CFG;
+ $quizid = required_param('quiz', PARAM_INT);
+ // $courseid = optional_param('id', PARAM_INT);
+ // $userid   = optional_param('userid', $USER->id, PARAM_INT);
 
-    $settings->add(new admin_setting_configcheckbox('gradereport_quizanalytics_globalboundary',
-        get_string('setglobal', 'gradereport_quizanalytics'),
-        get_string('setglobaldes', 'gradereport_quizanalytics'), 1));
+require_login();
+if (!empty($quizid)) {
+        $totalarray = array();
+        $totalarray =fetchdata($quizid);
+        echo $totalarray;
+    }
 
-    $settings->add(new admin_setting_configtextarea('gradereport_quizanalytics_gradeboundary',
-        get_string('gradeboundary', 'gradereport_quizanalytics'),
-        get_string('gradeboundarydes', 'gradereport_quizanalytics'),
-        '0-60, 61-70, 71-80, 81-90, 91-100'));
-
-}

@@ -114,7 +114,7 @@ $(document).ready(function() {
 						};
 						var attemptssnapshotopt = $.extend(totaldata.attemptssnapshot.opt[key], attemptssnapshotopt2);
 
-						$('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot'+key+'"></canvas><div id="js-legend'+key+'" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot'+key+'"></a></div></div>');
+						$('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot'+key+'"></canvas><div id="js-legend'+key+'" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot'+key+'"></a><div class="shareBtn" data-user_id="'+userid+'" data-canvas_id="attemptssnapshot'+key+'"></div></div></div>');
 						var ctx = document.getElementById("attemptssnapshot"+key).getContext('2d');
 						var attemptssnapshot = new Chart(ctx, {
 							type: 'doughnut',
@@ -433,7 +433,7 @@ $(document).ready(function() {
 	$("#fetchdata").one( "click", function() {
 		$(".showanalytics").find("canvas").each(function() {
 			var canvasid = $(this).attr("id");
-			$(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="'+canvasid+'"></a></div></div>');
+			$(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="'+canvasid+'"></a><div class="shareBtn" data-user_id="'+userid+'" data-canvas_id="'+canvasid+'"></div></div>');
 		});
 	});
 
@@ -482,7 +482,6 @@ $(document).ready(function() {
 		}
 	};
 
-	
 
 	$('body').on('click', '.download-canvas', function(e) {
 		var canvasId = $(this).data('canvas_id');
@@ -496,42 +495,3 @@ function downloadCanvas(link, canvasId, filename) {
 	link.download = filename;
 }
 
-// function postImageToFacebook(token, filename, mimeType, imageData, userid, message) {
-// 	var fd = new FormData();
-// 	fd.append("source", imageData);
-// 	fd.append("userid", userid);
-
-//     // Upload image to facebook without story(post to feed)
-//     $.ajax({
-//     	url: siteurl+"/grade/report/quizanalytics/imagefile.php",
-//     	type: "POST",
-//     	data: fd,
-//     	processData: false,
-//     	contentType: false,
-//     	cache: false,
-//     	success: function (data) {
-//             // Get image source url
-//             if(data){
-//             	FB.ui({
-//             		method: 'share_open_graph',
-//             		action_type: 'og.shares',
-//             		action_properties: JSON.stringify({
-//             			object : {
-//             				'og:url': siteurl,
-//             				'og:title': fbtitle,
-//             				'og:image:width': '1200',
-//             				'og:image:height': '630',
-//             				'og:image': data,
-//             			}
-//             		})
-//             	});
-//             }
-//         },
-//         error: function (shr, status, data) {
-//         	console.log("error " + data + " Status " + shr.status);
-//         },
-//         complete: function (data) {
-//             //console.log('Post to facebook Complete');
-//         }
-//     });
-// }
