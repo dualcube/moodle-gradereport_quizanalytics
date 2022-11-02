@@ -48,6 +48,6 @@ $displayoptions = mod_quiz_display_options::make_from_quiz($quiz,
 
 $attemptobj = quiz_attempt::create($attempt->id);
 
-$quizslot = $DB->get_record('quiz_slots', array('questionid' => $questionid, 'quizid' => $quiz->id));
+$quizslot = $DB->get_record('quiz_slots', array('id' => $questionid, 'quizid' => $quiz->id));
 
 echo $output->review_page($attemptobj, array($quizslot->slot), 0, 1, 1, $displayoptions, array());

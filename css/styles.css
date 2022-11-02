@@ -63,7 +63,7 @@
 }
 .download-canvas {
   display: inline-block;
-  background: #f8f8f8 url(images/downloadicon.png) center center no-repeat;
+  background: #f8f8f8 url(../pix/downloadicon.png) center center no-repeat;
   height: 35px;
   background-size: 70% 70%;
   border: 4px solid #eee;

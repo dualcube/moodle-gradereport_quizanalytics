@@ -33,11 +33,10 @@ $userid   = optional_param('userid', $USER->id, PARAM_INT);
 $PAGE->set_url(new moodle_url($CFG->wwwroot.'/grade/report/quizanalytics/index.php', array('id' => $courseid)));
 $PAGE->requires->css('/grade/report/quizanalytics/css/styles.css', true);
 $PAGE->requires->css('/grade/report/quizanalytics/css/bootstrap.min.css', true);
-$PAGE->requires->js('/grade/report/quizanalytics/js/jquery.min.js', true);
-
-$PAGE->requires->js('/grade/report/quizanalytics/js/bootstrap.min.js', true);
-$PAGE->requires->js('/grade/report/quizanalytics/js/Chart.js', true);
-$PAGE->requires->js('/grade/report/quizanalytics/js/analytics.js', true);
+$PAGE->requires->js('/grade/report/quizanalytics/amd/src/jquery.min.js', true);
+$PAGE->requires->js('/grade/report/quizanalytics/amd/src/bootstrap.min.js', true);
+$PAGE->requires->js('/grade/report/quizanalytics/amd/src/Chart.js', true);
+$PAGE->requires->js('/grade/report/quizanalytics/amd/src/analytics.js', true);
 
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 5, PARAM_INT);  // How many per page.

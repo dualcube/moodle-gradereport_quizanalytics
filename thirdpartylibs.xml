@@ -1,34 +1,34 @@
 <?xml version="1.0"?>
 <libraries>
     <library>
-        <location>js/analytics.js</location>
+        <location>amd/src/analytics.js</location>
         <name>analytics</name>
         <license>MIT</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>js/jquery.js</location>
+        <location>amd/src/jquery.js</location>
         <name>jQuery JavaScript Library</name>
         <version>v3.1.1</version>
         <license>MIT</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>js/bootstrap.min.js</location>
+        <location>amd/src/bootstrap.min.js</location>
         <name>Bootstrap JavaScript Library</name>
         <version>v3.3.7</version>
         <license>MIT</license>
         <licenseversion>3.0</licenseversion>
     </library>
     <library>
-        <location>js/Chart.js</location>
+        <location>amd/src/Chart.js</location>
         <name>Chart JavaScript Library</name>
         <version>2.6.0</version>
         <license>MIT</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>js/jquery.min.js</location>
+        <location>amd/src/jquery.min.js</location>
         <name>jQuery JavaScript Library</name>
         <version>v3.2.1</version>
         <license>MIT</license>
