@@ -31,7 +31,7 @@ In the graphical analysis it has four types of graphs:-
     2.2) Hardest Question - This graph represnts top ten hardest questions depending on how
         many times the quiz was attempted and the times that particular question is left
         unattempted or incorrectly attempted. Clicking on the bars dedicated to each
-        question will show the question itself along with explanation and correct answer.
+        question will show the question itself along with your last attempt, explanation and correct answer.
 
     2.3) Attempt Snapshot - This section is like a recap, displaying the key figures of all
         your previous attempt.
@@ -53,25 +53,12 @@ In the graphical analysis it has four types of graphs:-
 
     4.2) Question Analysis - The curves here depict how the users fared in each question.
         Clicking on the circles dedicated to each question will show the question itself
-        along with explanation and correct answer.
+        along with last attempt, explanation and correct answer.
 
 Settings Instructions:
 
 Go to Site administration -> Grades -> Report settings -> Quiz Analytics
-here you can Set Cut Off for all the quizes of the course, can set Grade Boundary and
-add Facebook App ID, Facebook API version and Title to share the graph on Facebook.
-
-To Create Facebook App ID:
-
-1. Login to Facebook.
-2. Click on Manage Apps from left side bar.
-3. Add an App by clicking on the "Add a New App" button.
-    You can see API Version, App ID in Dashboard page.
-4. Click on Settings link from left side bar then fill up all the required fields and
-    add one platform by clicking on the "Add Platform" choose "Website" After that
-    click on the "Save Changes" button.
-5. Click on App Review from left side bar, click on the space to the left side of "No"
-    to make your app public.
+here you can Set Cut Off for all the quizes of the course and can set Grade Boundary 
 
 Installation:
 
