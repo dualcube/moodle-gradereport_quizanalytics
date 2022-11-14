@@ -25,7 +25,6 @@
 
 require_once('../../../config.php');
 require_once($CFG->dirroot.'/grade/lib.php');
-require_once ($CFG->dirroot.'/grade/report/quizanalytics/lib.php');
 
 $courseid = required_param('id', PARAM_INT);
 $userid   = optional_param('userid', $USER->id, PARAM_INT);
@@ -114,7 +113,40 @@ if (!$getquiz) {
     echo $OUTPUT->heading(get_string('noquizfound', 'gradereport_quizanalytics'));
     $table = null;
 } else {
-    $table = get_table($USER,$getquiz,$table,$qanalyticsformatoptions,$courseid);
+    $table->head = array ();
+        $table->head[] = get_string('quizname', 'gradereport_quizanalytics');
+        $table->head[] = get_string('noofattempts', 'gradereport_quizanalytics');
+        $table->head[] = get_string('action', 'gradereport_quizanalytics');
+
+        foreach ($getquiz as $getquizkey => $getquizval) {
+            $getquizattemptsnotgraded = $DB->get_records_sql("SELECT * FROM {quiz_attempts}
+            WHERE state = 'finished' AND sumgrades IS NULL AND quiz = ? AND userid = ?", array($getquizval->id, $USER->id));
+
+            $getquizattempts = $DB->get_records('quiz_attempts', array('quiz' => $getquizval->id,
+                'userid' => $USER->id, 'state' => 'finished'));
+
+            $getmoduleid = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm,
+                {modules} m, {quiz} q WHERE m.name = 'quiz' AND cm.module = m.id
+                AND cm.course = q.course AND cm.instance = q.id AND q.id = ?", array($getquizval->id));
+            if (isset($getmoduleid)) {
+                $quizviewurl = $CFG->wwwroot."/mod/quiz/view.php?id=".$getmoduleid->id;
+            } else {
+                $quizviewurl = "#";
+            }
+
+            $row = array ();
+            $row[] = "<a href='".$quizviewurl."'>".format_text($getquizval->name, "", $qanalyticsformatoptions)."</a>";
+            $row[] = count($getquizattempts);
+            if (count($getquizattemptsnotgraded) == count($getquizattempts)) {
+                $row[] = get_string('notgraded', 'gradereport_quizanalytics');
+            } else {
+                $row[] = "<a href='#' id='fetchdata' class='fetchdata'
+                data-url='".$CFG->wwwroot."' data-quize_id='".$getquizval->id."'
+                data-course_id='".$courseid."'>"
+                .get_string('viewanalytics', 'gradereport_quizanalytics')."</a>";
+            }
+            $table->data[] = $row;
+        }
 }
 
 if (!empty($table)) {
@@ -124,7 +156,130 @@ if (!empty($table)) {
     echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
 }
 
-$html = get_showanalytics_html();
+$html = '<div class="showanalytics">
+                    <div class="tabbable parentTabs">
+                        <ul class="nav nav-tabs alyticsul">
+                            <li class="active">
+                                <a href="#tabs-1"><span class="lastattemptsummary">Last </span>
+                                '.get_string('tab1', 'gradereport_quizanalytics').'</a>
+                            </li>
+                            <li class="active">
+                                <a href="#tabs-2">'.get_string('tab2', 'gradereport_quizanalytics').'</a>
+                            </li>
+                            <li class="active">
+                                <a href="#tabs-3">'.get_string('tab3', 'gradereport_quizanalytics').'</a>
+                            </li>
+                            <li class="active">
+                                <a href="#tabs-4">'.get_string('tab4', 'gradereport_quizanalytics').'</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane mobile_overflow fade active in" id="tabs-1">
+                                <div class="canvas-wrap"><label style="width:850px;"><canvas id="lastattemptsummary"></canvas></label></div>
+                                <p class="lastattemptsummarydes">'.get_string('lastattemptsummarydes', 'gradereport_quizanalytics').'</p>
+                                <p class="attemptsummarydes">'.get_string('attemptsummarydes', 'gradereport_quizanalytics').'</p>
+                            </div>
+                            <div class="tab-pane mobile_overflow fade in" id="tabs-2">
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs alyticsul">
+                                        <li class="active"><a href="#subtab21">
+                                            <span class="subtab1">'.get_string('tab2subtab11', 'gradereport_quizanalytics').'</span>
+                                            <span class="subtab2">'.get_string('tab2subtab12', 'gradereport_quizanalytics').'</span>
+                                        </a></li>
+                                        <li class="active"><a href="#subtab22">'.get_string('tab2subtab2', 'gradereport_quizanalytics').'</a></li>
+                                        <li class="active"><a href="#subtab23">'.get_string('tab2subtab3', 'gradereport_quizanalytics').'</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="subtab21" class="tab-pane fade in mobile_overflow active show">
+                                            <div class="subtabmix">
+                                                <div class="canvas-wrap">
+                                                    <label style="width:700px;">
+                                                        <canvas id="mixchart"></canvas>
+                                                    </label>
+                                                </div>
+                                                <p>'.get_string('mixchartdes', 'gradereport_quizanalytics').'</p>
+                                            </div>
+                                            <div class="subtabtimechart1">
+                                                <div class="canvas-wrap">
+                                                    <label style="width:700px;">
+                                                        <canvas id="timechart"></canvas>
+                                                    </label>
+                                                </div>
+                                                <p>'.get_string('timechartdes', 'gradereport_quizanalytics').'</p>
+                                            </div>
+                                        </div>
+                                        <div id="subtab22" class="tab-pane fade in mobile_overflow">
+                                            <div class="canvas-wrap"><label style="width:700px;">
+                                                <canvas id="hardestques"></canvas>
+                                            </lable></div>
+                                            <p>'.get_string('hardestquesdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                        <div id="subtab23" class="tab-pane fade in mobile_overflow">
+                                            <div class="span12 attemptssnapshot"></div>
+                                            <p>'.get_string('attemptssnapshotdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane mobile_overflow fade in" id="tabs-3">
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs alyticsul">
+                                        <li class="active">
+                                            <a href="#subtab31">'.get_string('tab3subtab1', 'gradereport_quizanalytics').'</a>
+                                        </li>
+                                        <li class="active">
+                                            <a href="#subtab32">'.get_string('tab3subtab2', 'gradereport_quizanalytics').'</a>
+                                        </li>
+                                        <li class="active">
+                                            <a href="#subtab33">'.get_string('tab3subtab3', 'gradereport_quizanalytics').'</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="subtab31" class="tab-pane fade in mobile_overflow active show">
+                                            <label style="width:400px; margin: 0 auto;"><canvas id="questionpercat"></canvas>
+                                            <div id="js-legendqpc" class="chart-legend"></div></label>
+                                            <p>'.get_string('questionpercatdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                        <div id="subtab32" class="tab-pane fade in mobile_overflow">
+                                           <div class="canvas-wrap"><label style="width:700px;"><canvas id="allusers"></canvas>
+                                            </label></div>
+                                            <p>'.get_string('allusersdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                        <div id="subtab33" class="tab-pane fade in mobile_overflow">
+                                            <div class="canvas-wrap"><label style="width:700px;">
+                                            <canvas id="loggedinuser"></canvas></label></div>
+                                            <p>'.get_string('loggedinuserdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane mobile_overflow fade in" id="tabs-4">
+                                <div class="tabbable">
+                                    <ul class="nav nav-tabs alyticsul">
+                                        <li class="active">
+                                            <a href="#subtab41">'.get_string('tab4subtab1', 'gradereport_quizanalytics').'</a>
+                                        </li>
+                                        <li class="active">
+                                            <a href="#subtab42">'.get_string('quesanalysis', 'gradereport_quizanalytics').'</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="subtab41" class="tab-pane fade in mobile_overflow active show">
+                                            <label style="width:400px; margin: 0 auto;"><canvas id="gradeanalysis"></canvas>
+                                            <div id="js-legendgrade" class="chart-legend"></div></label>
+                                            <p>'.get_string('gradeanalysisdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                        <div id="subtab42" class="tab-pane fade in mobile_overflow">
+                                            <div class="canvas-wrap"><label style="width:700px;">
+                                            <canvas id="quesanalysis"></canvas></lable></div>
+                                            <p>'.get_string('quesananalysisdes', 'gradereport_quizanalytics').'</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
 
 echo $html;
 

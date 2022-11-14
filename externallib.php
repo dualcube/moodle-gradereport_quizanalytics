@@ -84,11 +84,12 @@ class moodle_gradereport_quizanalytics_external extends external_api {
                 quizatt.userid = ? AND qattstep.sequencenumber >= 2 AND
                 (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($quizid, $catdetail->id, 'description', $USER->id));
 
+                
                 $totalquizattempts = count($totalquizattempted);
                 $totalquizuserattempts = count($usersgradedattempts);
-
                 $totalnoofcatattempts = $catdetail->qnum * $totalquizattempts;
                 $totalnoofcatuserattempts = $catdetail->qnum * $totalquizuserattempts;
+                $lastuserquizattemptid = $DB->get_record_sql("SELECT quizatt.id as quizattid FROM {quiz_attempts} quizatt WHERE state = 'finished' AND sumgrades IS NOT NULL AND attempt = ? AND quiz =? AND userid = ?",array($totalquizuserattempts, $quizid, $USER->id));
 
                 $totalwrongattemts[] = ($totalnoofcatattempts - count($totalcorrectattempts));
                 $totaluserswrongattemts[] = ($totalnoofcatuserattempts - count($userstotalcorrectattempts));
@@ -652,6 +653,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
                       'quizattempt' => $quiz->attempts,
                       'allquestion' => $selectedquestionid,
                       'quizid' => $quizid,
+                      'lastuserquizattemptid'=> $lastuserquizattemptid->quizattid,
                       'url' => $CFG->wwwroot
                       );
              

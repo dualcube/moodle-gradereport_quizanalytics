@@ -4,7 +4,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
         
             $(document).ready(function() {
-                var lastattemptsummary, loggedinuser, mixchart, allusers, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, allquestions, quizid, rooturl, userid;
+                var lastattemptsummary, loggedinuser, mixchart, allusers, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, allquestions, quizid, rooturl, userid,lastuserquizattemptid;
                 var attemptssnapshot_arr = [];
                 Chart.plugins.register({
                     beforeDraw: function(chartInstance) {
@@ -32,7 +32,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                             allquestions = totaldata.allquestion;
                             quizid = totaldata.quizid;
                             rooturl = totaldata.url;
-
+                            lastuserquizattemptid=totaldata.lastuserquizattemptid;
                             $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
                             $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").hide();
                             $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
@@ -419,7 +419,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                 if (label == quesid.split(",")[0]) {
                     var quesid = quesid.split(",")[1];
                     var id = quizid;
-                    var newwindow = window.open(rooturl+'/grade/report/quizanalytics/questions.php?quizid='+id+'&quesid='+quesid, '', 'height=500,width=800');
+                    var newwindow = window.open(rooturl+'/mod/quiz/review.php?attempt='+lastuserquizattemptid+'&page='+quesid, '', 'height=500,width=800');
                     if (window.focus) {
                         newwindow.focus();
                     }
@@ -440,7 +440,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                 if (label == quesid.split(",")[0]) {
                     var quesid = quesid.split(",")[1];
                     var id = quizid;
-                    var newwindow = window.open(rooturl+'/grade/report/quizanalytics/questions.php?quizid='+id+'&quesid='+quesid, '', 'height=500,width=800');
+                    var newwindow = window.open(rooturl+'/mod/quiz/review.php?attempt='+lastuserquizattemptid+'&page='+quesid, '', 'height=500,width=800');
                     if (window.focus) {
                         newwindow.focus();
                     }
