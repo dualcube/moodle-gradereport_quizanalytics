@@ -1,38 +1,38 @@
-define(['jquery',  'core/ajax'],function($, ajax) {
+define(['jquery', 'core/ajax'], function ($, ajax) {
     return {
-        analytic: function(user_id,course_id) {
+        analytic: function (user_id, course_id) {
 
-        
-            $(document).ready(function() {
-                var lastattemptsummary, loggedinuser, mixchart, allusers, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, allquestions, quizid, rooturl, userid,lastuserquizattemptid;
+
+            $(document).ready(function () {
+                var lastattemptsummary, loggedinuser, mixchart, allusers, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, allquestions, quizid, rooturl, userid, lastuserquizattemptid;
                 var attemptssnapshot_arr = [];
                 Chart.plugins.register({
-                    beforeDraw: function(chartInstance) {
+                    beforeDraw: function (chartInstance) {
                         var ctx = chartInstance.chart.ctx;
                         ctx.fillStyle = "white";
                         ctx.fillRect(0, 0, chartInstance.chart.width, chartInstance.chart.height);
                     }
                 });
-            
-                $(".fetchdata").click(function(e) {
+
+                $(".fetchdata").click(function (e) {
                     e.preventDefault();
-                    
+
                     var quizid = $(this).data('quize_id');
 
                     var promises = ajax.call([
-                                {
-                                    methodname:'moodle_quizanalytics_fetchdata',
-                                    args:{quizid : quizid},
-                                }
-                            ]);
-                    promises[0].done(function(data){
+                        {
+                            methodname: 'moodle_quizanalytics_fetchdata',
+                            args: { quizid: quizid },
+                        }
+                    ]);
+                    promises[0].done(function (data) {
                         if (data) {
                             var totaldata = jQuery.parseJSON(data);
 
                             allquestions = totaldata.allquestion;
                             quizid = totaldata.quizid;
                             rooturl = totaldata.url;
-                            lastuserquizattemptid=totaldata.lastuserquizattemptid;
+                            lastuserquizattemptid = totaldata.lastuserquizattemptid;
                             $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
                             $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").hide();
                             $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
@@ -42,17 +42,17 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").hide();
                             }
 
-                            setTimeout(function() {
-                                $(".showanalytics").find("ul.nav-tabs a").click(function() {
-                                  // e.preventDefault();
-                                  $(this).tab('show');
-                                  // Center scroll on mobile.
-                                  if ($(window).width() < 480) {
+                            setTimeout(function () {
+                                $(".showanalytics").find("ul.nav-tabs a").click(function () {
+                                    // e.preventDefault();
+                                    $(this).tab('show');
+                                    // Center scroll on mobile.
+                                    if ($(window).width() < 480) {
                                         var outerContent = $('.mobile_overflow');
                                         var innerContent = $('.canvas-wrap');
                                         if (outerContent.length > 0) {
-                                            outerContent.scrollLeft( (innerContent.width() - outerContent.width()) / 2);
-                                        }   
+                                            outerContent.scrollLeft((innerContent.width() - outerContent.width()) / 2);
+                                        }
                                     }
                                 });
                             }, 100);
@@ -71,40 +71,40 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 $("#subtab21").find(".subtabtimechart").show();
                             }
 
-                            if(attemptssnapshot_arr.length > 0){
-                                $.each(attemptssnapshot_arr, function(i,v){
+                            if (attemptssnapshot_arr.length > 0) {
+                                $.each(attemptssnapshot_arr, function (i, v) {
                                     v.destroy();
                                 });
                             }
                             $('.attemptssnapshot').html('');
-                            $.each(totaldata.attemptssnapshot.data, function(key,value) {
+                            $.each(totaldata.attemptssnapshot.data, function (key, value) {
                                 var attemptssnapshotopt2 = {
                                     tooltips: {
                                         callbacks: {
-                                        // use label callback to return the desired label
-                                            label: function(tooltipItem, data) {
-                                                return " "+ data.labels[tooltipItem.index] + " : " + data.datasets[0].data[tooltipItem.index];
+                                            // use label callback to return the desired label
+                                            label: function (tooltipItem, data) {
+                                                return " " + data.labels[tooltipItem.index] + " : " + data.datasets[0].data[tooltipItem.index];
                                             }
                                         }
                                     },
                                 };
                                 var attemptssnapshotopt = $.extend(totaldata.attemptssnapshot.opt[key], attemptssnapshotopt2);
 
-                                $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot'+key+'"></canvas><div id="js-legend'+key+'" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot'+key+'"></a><div class="shareBtn" data-user_id="'+userid+'" data-canvas_id="attemptssnapshot'+key+'"></div></div></div>');
-                                var ctx = document.getElementById("attemptssnapshot"+key).getContext('2d');
+                                $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
+                                var ctx = document.getElementById("attemptssnapshot" + key).getContext('2d');
                                 var attemptssnapshot = new Chart(ctx, {
                                     type: 'doughnut',
                                     data: totaldata.attemptssnapshot.data[key],
                                     options: attemptssnapshotopt,
                                 });
-                                document.getElementById('js-legend'+key).innerHTML = attemptssnapshot.generateLegend();
+                                document.getElementById('js-legend' + key).innerHTML = attemptssnapshot.generateLegend();
 
-                                $('#js-legend'+key).find('ul').find('li').on("click",function(snaplegende){
+                                $('#js-legend' + key).find('ul').find('li').on("click", function (snaplegende) {
                                     var index = $(this).index();
                                     $(this).toggleClass("strike");
                                     var ci = attemptssnapshot;
-                                    function first(p){
-                                        for(var i in p) {return p[i]};
+                                    function first(p) {
+                                        for (var i in p) { return p[i] };
                                     }
                                     var curr = first(ci.config.data.datasets[0]._meta).data[index];
                                     curr.hidden = !curr.hidden
@@ -112,7 +112,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 });
                                 attemptssnapshot_arr.push(attemptssnapshot);
                             });
-                                
+
                             var ctx = document.getElementById("questionpercat").getContext('2d');
                             if (questionpercat !== undefined) {
                                 questionpercat.destroy();
@@ -121,8 +121,8 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 tooltips: {
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
-                                            return " "+ data.labels[tooltipItem.index] + " : " + data.datasets[0].data[tooltipItem.index];
+                                        label: function (tooltipItem, data) {
+                                            return " " + data.labels[tooltipItem.index] + " : " + data.datasets[0].data[tooltipItem.index];
                                         }
                                     }
                                 },
@@ -136,12 +136,12 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                             });
                             document.getElementById('js-legendqpc').innerHTML = questionpercat.generateLegend();
 
-                            $("#js-legendqpc > ul > li").on("click",function(legende){
+                            $("#js-legendqpc > ul > li").on("click", function (legende) {
                                 var index = $(this).index();
                                 $(this).toggleClass("strike");
                                 var ci = questionpercat;
-                                function first(p){
-                                    for(var i in p) {return p[i]};
+                                function first(p) {
+                                    for (var i in p) { return p[i] };
                                 }
                                 var curr = first(ci.config.data.datasets[0]._meta).data[index];
                                 curr.hidden = !curr.hidden
@@ -150,13 +150,13 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                             var allusersopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     }
                                 },
-                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' }}], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max:100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
                             var allusersopt = $.extend(totaldata.allusers.opt, allusersopt2);
 
@@ -172,15 +172,15 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                             var loggedinuseropt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     }
                                 },
-                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' }}], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max:100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
-                            var loggedinuseropt = $.extend(totaldata.loggedinuser.opt, loggedinuseropt2 );
+                            var loggedinuseropt = $.extend(totaldata.loggedinuser.opt, loggedinuseropt2);
 
                             var ctx = document.getElementById("loggedinuser").getContext('2d');
                             if (loggedinuser !== undefined) {
@@ -198,25 +198,25 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                                 var ctx = document.getElementById("lastattemptsummary");
                                 ctx.height = 100;
-                                var ctx1= ctx.getContext('2d');
+                                var ctx1 = ctx.getContext('2d');
                                 if (lastattemptsummary !== undefined) {
                                     lastattemptsummary.destroy();
                                 }
 
                                 var lastattemptsummaryopt2 = {
                                     tooltips: {
-                                        custom: function(tooltip) {
+                                        custom: function (tooltip) {
                                             if (!tooltip) return;
                                             // disable displaying the color box;
                                             tooltip.displayColors = false;
                                         },
                                         callbacks: {
                                             // use label callback to return the desired label
-                                            label: function(tooltipItem, data) {
+                                            label: function (tooltipItem, data) {
                                                 return tooltipItem.yLabel + " : " + tooltipItem.xLabel;
                                             },
                                             // remove title
-                                            title: function(tooltipItem, data) {
+                                            title: function (tooltipItem, data) {
                                                 return;
                                             }
                                         }
@@ -229,7 +229,7 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                     type: 'horizontalBar',
                                     data: totaldata.lastattemptsummary.data,
                                     options: lastattemptsummaryopt
-                                });             
+                                });
                             } else {
                                 $(".showanalytics").find("#lastattemptsummary").hide();
                                 $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="noquesisattempted"><b>Please attempt at least one question.</b></p>');
@@ -237,25 +237,25 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                             var mixchartopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     },
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
+                                        label: function (tooltipItem, data) {
                                             return data.datasets[tooltipItem.datasetIndex].label + " : " + tooltipItem.yLabel;
                                         },
                                         // remove title
-                                        title: function(tooltipItem, data) {
-                                            return ;
+                                        title: function (tooltipItem, data) {
+                                            return;
                                         }
                                     }
                                 },
-                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }}], yAxes: [{ scaleLabel: { display: true, labelString: 'Cut Off Score' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Cut Off Score' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
-                            var mixchartopt = $.extend(totaldata.mixchart.opt, mixchartopt2 );
+                            var mixchartopt = $.extend(totaldata.mixchart.opt, mixchartopt2);
 
                             var ctx = document.getElementById("mixchart").getContext('2d');
                             if (mixchart !== undefined) {
@@ -266,28 +266,28 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 data: totaldata.mixchart.data,
                                 options: mixchartopt
                             });
-                
+
                             var timechartopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     },
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
+                                        label: function (tooltipItem, data) {
                                             return tooltipItem.yLabel + " : " + tooltipItem.xLabel;
                                         },
                                         // remove title
-                                        title: function(tooltipItem, data) {
-                                            return ;
+                                        title: function (tooltipItem, data) {
+                                            return;
                                         }
                                     }
                                 },
                                 scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Score' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
-                            var timechartopt = $.extend(totaldata.timechart.opt, timechartopt2 );
+                            var timechartopt = $.extend(totaldata.timechart.opt, timechartopt2);
 
                             var ctx = document.getElementById("timechart").getContext('2d');
                             if (timechart !== undefined) {
@@ -306,20 +306,20 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                             var gradeanalysisopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     },
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
-                                            return "Percentage Scored ("+ data.labels[tooltipItem.index] + ") : " + data.datasets[0].data[tooltipItem.index];
+                                        label: function (tooltipItem, data) {
+                                            return "Percentage Scored (" + data.labels[tooltipItem.index] + ") : " + data.datasets[0].data[tooltipItem.index];
                                         }
                                     }
                                 }
                             };
-                            var gradeanalysisopt = $.extend(totaldata.gradeanalysis.opt, gradeanalysisopt2 );
+                            var gradeanalysisopt = $.extend(totaldata.gradeanalysis.opt, gradeanalysisopt2);
 
                             gradeanalysis = new Chart(ctx, {
                                 type: 'pie',
@@ -327,12 +327,12 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 options: gradeanalysisopt
                             });
                             document.getElementById('js-legendgrade').innerHTML = gradeanalysis.generateLegend();
-                            $("#js-legendgrade > ul > li").on("click",function(legendgrade){
+                            $("#js-legendgrade > ul > li").on("click", function (legendgrade) {
                                 var index = $(this).index();
                                 $(this).toggleClass("strike");
                                 var ci = gradeanalysis;
-                                function first(p){
-                                    for(var i in p) {return p[i]};
+                                function first(p) {
+                                    for (var i in p) { return p[i] };
                                 }
                                 var curr = first(ci.config.data.datasets[0]._meta).data[index];
                                 curr.hidden = !curr.hidden
@@ -345,23 +345,23 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                             }
                             var quesanalysisopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     },
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
-                                            var newtooltipq = [data.datasets[tooltipItem.datasetIndex].label +" : "+ tooltipItem.yLabel, "(Click to Review Question & Last Attempt)"];                 
+                                        label: function (tooltipItem, data) {
+                                            var newtooltipq = [data.datasets[tooltipItem.datasetIndex].label + " : " + tooltipItem.yLabel, "(Click to Review Question & Last Attempt)"];
                                             return newtooltipq;
                                         }
                                     }
                                 },
-                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Question Number' }}], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Question Number' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
                             var quesanalysisopt = $.extend(totaldata.quesanalysis.opt, quesanalysisopt2);
-                            
+
                             quesanalysis = new Chart(ctx, {
                                 type: 'line',
                                 data: totaldata.quesanalysis.data,
@@ -370,24 +370,24 @@ define(['jquery',  'core/ajax'],function($, ajax) {
 
                             var hardestquesopt2 = {
                                 tooltips: {
-                                    custom: function(tooltip) {
+                                    custom: function (tooltip) {
                                         if (!tooltip) return;
                                         // disable displaying the color box;
                                         tooltip.displayColors = false;
                                     },
                                     callbacks: {
                                         // use label callback to return the desired label
-                                        label: function(tooltipItem, data) {
+                                        label: function (tooltipItem, data) {
                                             var newtooltip = [data.datasets[tooltipItem.datasetIndex].label + " : " + tooltipItem.yLabel, "(Click to Review Question & Last Attempt)"];
-                                            return  newtooltip;
+                                            return newtooltip;
                                         },
                                         // remove title
-                                        title: function(tooltipItem, data) {
+                                        title: function (tooltipItem, data) {
                                             return;
                                         }
                                     }
                                 },
-                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' }}], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                                scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                             };
                             var hardestquesopt = $.extend(totaldata.hardestques.opt, hardestquesopt2);
 
@@ -401,73 +401,73 @@ define(['jquery',  'core/ajax'],function($, ajax) {
                                 options: hardestquesopt
                             });
                         }
- 
-                    }).fail(function(ex) {
-                        
+
+                    }).fail(function (ex) {
+
                     });
                     var canvasquesanalysis = document.getElementById("quesanalysis");
-    var canvashardestques = document.getElementById("hardestques");
+                    var canvashardestques = document.getElementById("hardestques");
 
-    canvasquesanalysis.onclick = function (qevt) {
-        var activePoints = quesanalysis.getElementsAtEvent(qevt);
-        var chartData = activePoints[0]['_chart'].config.data;
-        var idx = activePoints[0]['_index'];
-        var label = chartData.labels[idx];
+                    canvasquesanalysis.onclick = function (qevt) {
+                        var activePoints = quesanalysis.getElementsAtEvent(qevt);
+                        var chartData = activePoints[0]['_chart'].config.data;
+                        var idx = activePoints[0]['_index'];
+                        var label = chartData.labels[idx];
 
-        if (allquestions !== undefined) {
-            $.each(allquestions, function(i, quesid) {
-                if (label == quesid.split(",")[0]) {
-                    var quesid = quesid.split(",")[1];
-                    var id = quizid;
-                    var newwindow = window.open(rooturl+'/mod/quiz/review.php?attempt='+lastuserquizattemptid+'&page='+quesid, '', 'height=500,width=800');
-                    if (window.focus) {
-                        newwindow.focus();
-                    }
-                    return false;
-                }
-            });
-        }
-    };
+                        if (allquestions !== undefined) {
+                            $.each(allquestions, function (i, quesid) {
+                                if (label == quesid.split(",")[0]) {
+                                    var quesid = quesid.split(",")[1];
+                                    var id = quizid;
+                                    var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
+                                    if (window.focus) {
+                                        newwindow.focus();
+                                    }
+                                    return false;
+                                }
+                            });
+                        }
+                    };
 
-    canvashardestques.onclick = function (aqevt) {
-        var activePoints = hardestques.getElementsAtEvent(aqevt);
-        var chartData = activePoints[0]['_chart'].config.data;
-        var idx = activePoints[0]['_index'];
-        var label = chartData.labels[idx];
+                    canvashardestques.onclick = function (aqevt) {
+                        var activePoints = hardestques.getElementsAtEvent(aqevt);
+                        var chartData = activePoints[0]['_chart'].config.data;
+                        var idx = activePoints[0]['_index'];
+                        var label = chartData.labels[idx];
 
-        if (allquestions !== undefined) {
-            $.each(allquestions, function(i, quesid) {
-                if (label == quesid.split(",")[0]) {
-                    var quesid = quesid.split(",")[1];
-                    var id = quizid;
-                    var newwindow = window.open(rooturl+'/mod/quiz/review.php?attempt='+lastuserquizattemptid+'&page='+quesid, '', 'height=500,width=800');
-                    if (window.focus) {
-                        newwindow.focus();
-                    }
-                    return false;
-                }
-            });
-        }
-    };
+                        if (allquestions !== undefined) {
+                            $.each(allquestions, function (i, quesid) {
+                                if (label == quesid.split(",")[0]) {
+                                    var quesid = quesid.split(",")[1];
+                                    var id = quizid;
+                                    var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
+                                    if (window.focus) {
+                                        newwindow.focus();
+                                    }
+                                    return false;
+                                }
+                            });
+                        }
+                    };
 
-                    
+
                 });
-                $("#fetchdata").one( "click", function() {
-                    $(".showanalytics").find("canvas").each(function() {
+                $("#fetchdata").one("click", function () {
+                    $(".showanalytics").find("canvas").each(function () {
                         var canvasid = $(this).attr("id");
-                        $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="'+canvasid+'"></a><div class="shareBtn" data-user_id="'+userid+'" data-canvas_id="'+canvasid+'"></div></div>');
+                        $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="' + canvasid + '"></div></div>');
                     });
                 });
 
 
 
-                $('body').on('click', '.download-canvas', function(e) {
+                $('body').on('click', '.download-canvas', function (e) {
                     var canvasId = $(this).data('canvas_id');
-                    downloadCanvas(this, canvasId, canvasId+'.jpeg');
+                    downloadCanvas(this, canvasId, canvasId + '.jpeg');
                 });
-                
+
             });
-                
+
             function downloadCanvas(link, canvasId, filename) {
                 link.href = document.getElementById(canvasId).toDataURL("image/jpeg");
                 link.download = filename;
