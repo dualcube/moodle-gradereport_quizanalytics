@@ -19,13 +19,6 @@ class moodle_gradereport_quizanalytics_external extends external_api
 
         global $DB, $USER, $PAGE, $CFG;
 
-
-        // $params = self::validate_parameters(
-        //     self::quizanalytics_fetchdata_parameters(),
-        //         array('quizeid'=>$quizeid)
-        // );
-
-
         $quiz = $DB->get_record('quiz', array('id' => $quizid));
 
         $attemptssql = "SELECT * FROM {quiz_attempts}
