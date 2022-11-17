@@ -18,7 +18,7 @@
  * Defines capabilities for the gradebook quizanalytics report
  *
  * @package   gradereport_quizanalytics
- * @author Moumita Adak <moumita.a@dualcube.com>
+ * @author DualCube <admin@dualcube.com>
  * @copyright  Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

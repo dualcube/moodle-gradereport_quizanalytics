@@ -18,7 +18,7 @@
  * The gradebook quizanalytics report
  *
  * @package   gradereport_quizanalytics
- * @author Moumita Adak <moumita.a@dualcube.com>
+ * @author DualCube <admin@dualcube.com>
  * @copyright Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -142,7 +142,7 @@ if (!$getquiz) {
     if (count($getquizattemptsnotgraded) == count($getquizattempts)) {
       $row[] = get_string('notgraded', 'gradereport_quizanalytics');
     } else {
-      $row[] = "<a href='#' id='fetchdata' class='fetchdata'
+      $row[] = "<a href='#' id='viewanalytic' class='viewanalytic'
                 data-url='" . $CFG->wwwroot . "' data-quize_id='" . $getquizval->id . "'
                 data-course_id='" . $courseid . "'>"
         . get_string('viewanalytics', 'gradereport_quizanalytics') . "</a>";
@@ -516,9 +516,6 @@ echo $OUTPUT->footer();
     max-width: 100%;
   }
 
-  /*#page-grade-report-quizanalytics-index {
-  background-color: #f4f4f4 !important;
-}*/
   #page-grade-report-quizanalytics-index .usermenu .dropdown-toggle::after {
     display: none;
   }

@@ -4,7 +4,7 @@ require_once("$CFG->libdir/externallib.php");
 class moodle_gradereport_quizanalytics_external extends external_api
 {
 
-    public static function quizanalytics_fetchdata_parameters()
+    public static function quizanalytics_analytic_parameters()
     {
         return new external_function_parameters(
             array(
@@ -14,7 +14,7 @@ class moodle_gradereport_quizanalytics_external extends external_api
     }
 
 
-    public static function quizanalytics_fetchdata($quizid)
+    public static function quizanalytics_analytic($quizid)
     {
 
         global $DB, $USER, $PAGE, $CFG;
@@ -769,7 +769,7 @@ class moodle_gradereport_quizanalytics_external extends external_api
         }
     }
 
-    public static function quizanalytics_fetchdata_returns()
+    public static function quizanalytics_analytic_returns()
     {
 
         return new external_value(PARAM_RAW, 'The updated JSON output');

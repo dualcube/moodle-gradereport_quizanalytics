@@ -12,14 +12,14 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 }
             });
 
-            $(".fetchdata").click(function (e) {
+            $(".viewanalytic").click(function (e) {
                 e.preventDefault();
 
                 var quizid = $(this).data('quize_id');
 
                 var promises = ajax.call([
                     {
-                        methodname: 'moodle_quizanalytics_fetchdata',
+                        methodname: 'moodle_quizanalytics_analytic',
                         args: { quizid: quizid },
                     }
                 ]);
@@ -449,7 +449,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
 
 
             });
-            $("#fetchdata").one("click", function () {
+            $("#viewanalytic").one("click", function () {
                 $(".showanalytics").find("canvas").each(function () {
                     var canvasid = $(this).attr("id");
                     $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="' + canvasid + '"></div></div>');
