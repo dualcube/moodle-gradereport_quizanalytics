@@ -1,7 +1,7 @@
 define(['jquery', 'core/ajax'], function ($, ajax) {
     return {
-        analytic: function (user_id, course_id) {
-            var last_attempt_summary, loggedin_user, mixchart, all_users, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, all_questions, quiz_id, rooturl, user_id, lastuserquizattemptid;
+        analytic: function () {
+            var lastAttemptSummary, loggedInUser, mixChart, allUsers, questionPerCat, timeChart, gradeAnalysis, quesAnalysis, hardestques, allQuestions, quizid, rooturl, userid, lastUserQuizAttemptID;
             var attemptssnapshot_arr = [];
             Chart.plugins.register({
                 beforeDraw: function (chartInstance) {
@@ -11,24 +11,24 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 }
             });
             $(".viewanalytic").click(function () {
-                var quiz_id = $(this).data('quiz_id');
+                var quizid = $(this).data('quiz_id');
                 var promises = ajax.call([
                     {
                         methodname: 'moodle_quizanalytics_analytic',
-                        args: { quiz_id: quiz_id },
+                        args: { quizid: quizid },
                     }
                 ]);
                 promises[0].done(function (data) {
                     if (data) {
-                        var totaldata = jQuery.parseJSON(data);
-                        all_questions = totaldata.allquestion;
-                        quiz_id = totaldata.quiz_id;
-                        rooturl = totaldata.url;
-                        lastuserquizattemptid = totaldata.lastuserquizattemptid;
+                        var totalData = jQuery.parseJSON(data);
+                        allQuestions = totalData.allQuestions;
+                        quizid = totalData.quizid;
+                        rooturl = totalData.url;
+                        lastUserQuizAttemptID = totalData.lastUserQuizAttemptID;
                         $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
                         $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").hide();
                         $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
-                        if (totaldata.userattempts > 1) {
+                        if (totalData.userattempts > 1) {
                             $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").show();
                             $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").show();
                             $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").hide();
@@ -47,7 +47,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             });
                         }, 100);
                         $(".showanalytics").css("display", "block");
-                        if (totaldata.quizattempt != 1) {
+                        if (totalData.quizattempt != 1) {
                             $("#tabs-2").find("ul").find("li").find("span.subtab1").show();
                             $("#tabs-2").find("ul").find("li").find("span.subtab2").hide();
                             $("#subtab21").find(".subtabmix").show();
@@ -64,7 +64,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             });
                         }
                         $('.attemptssnapshot').html('');
-                        $.each(totaldata.attemptssnapshot.data, function (key, value) {
+                        $.each(totalData.attemptssnapshot.data, function (key, value) {
                             var attemptssnapshotopt2 = {
                                 tooltips: {
                                     callbacks: {
@@ -75,12 +75,12 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                     }
                                 },
                             };
-                            var attemptssnapshotopt = $.extend(totaldata.attemptssnapshot.opt[key], attemptssnapshotopt2);
-                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + user_id + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
+                            var attemptssnapshotopt = $.extend(totalData.attemptssnapshot.opt[key], attemptssnapshotopt2);
+                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
                             var ctx = document.getElementById("attemptssnapshot" + key).getContext('2d');
                             var attemptssnapshot = new Chart(ctx, {
                                 type: 'doughnut',
-                                data: totaldata.attemptssnapshot.data[key],
+                                data: totalData.attemptssnapshot.data[key],
                                 options: attemptssnapshotopt,
                             });
                             document.getElementById('js-legend' + key).innerHTML = attemptssnapshot.generateLegend();
@@ -98,8 +98,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             attemptssnapshot_arr.push(attemptssnapshot);
                         });
                         var ctx = document.getElementById("questionpercat").getContext('2d');
-                        if (questionpercat !== undefined) {
-                            questionpercat.destroy();
+                        if (questionPerCat !== undefined) {
+                            questionPerCat.destroy();
                         }
                         var questionpercatopt2 = {
                             tooltips: {
@@ -111,17 +111,17 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 }
                             },
                         };
-                        var questionpercatopt = $.extend(totaldata.questionpercat.opt, questionpercatopt2);
-                        questionpercat = new Chart(ctx, {
+                        var questionpercatopt = $.extend(totalData.questionPerCat.opt, questionpercatopt2);
+                        questionPerCat = new Chart(ctx, {
                             type: 'pie',
-                            data: totaldata.questionpercat.data,
+                            data: totalData.questionPerCat.data,
                             options: questionpercatopt,
                         });
-                        document.getElementById('js-legendqpc').innerHTML = questionpercat.generateLegend();
+                        document.getElementById('js-legendqpc').innerHTML = questionPerCat.generateLegend();
                         $("#js-legendqpc > ul > li").on("click", function (legende) {
                             var index = $(this).index();
                             $(this).toggleClass("strike");
-                            var ci = questionpercat;
+                            var ci = questionPerCat;
                             function first(p) {
                                 for (var i in p) { return p[i] };
                             }
@@ -139,14 +139,14 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var allusersopt = $.extend(totaldata.all_users.opt, allusersopt2);
+                        var allusersopt = $.extend(totalData.allUsers.opt, allusersopt2);
                         var ctx = document.getElementById("allusers").getContext('2d');
-                        if (all_users !== undefined) {
-                            all_users.destroy();
+                        if (allUsers !== undefined) {
+                            allUsers.destroy();
                         }
-                        all_users = new Chart(ctx, {
+                        allUsers = new Chart(ctx, {
                             type: 'bar',
-                            data: totaldata.all_users.data,
+                            data: totalData.allUsers.data,
                             options: allusersopt
                         });
                         var loggedinuseropt2 = {
@@ -159,24 +159,24 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var loggedinuseropt = $.extend(totaldata.loggedin_user.opt, loggedinuseropt2);
+                        var loggedinuseropt = $.extend(totalData.loggedInUser.opt, loggedinuseropt2);
                         var ctx = document.getElementById("loggedinuser").getContext('2d');
-                        if (loggedin_user !== undefined) {
-                            loggedin_user.destroy();
+                        if (loggedInUser !== undefined) {
+                            loggedInUser.destroy();
                         }
-                        loggedin_user = new Chart(ctx, {
+                        loggedInUser = new Chart(ctx, {
                             type: 'bar',
-                            data: totaldata.loggedin_user.data,
+                            data: totalData.loggedInUser.data,
                             options: loggedinuseropt
                         });
-                        if (totaldata.last_attempt_summary.data != 0 && totaldata.last_attempt_summary.opt != 0) {
+                        if (totalData.lastAttemptSummary.data != 0 && totalData.lastAttemptSummary.opt != 0) {
                             $(".showanalytics").find(".noquesisattempted").hide();
                             $(".showanalytics").find("#lastattemptsummary").show();
                             var ctx = document.getElementById("lastattemptsummary");
                             ctx.height = 100;
                             var ctx1 = ctx.getContext('2d');
-                            if (last_attempt_summary !== undefined) {
-                                last_attempt_summary.destroy();
+                            if (lastAttemptSummary !== undefined) {
+                                lastAttemptSummary.destroy();
                             }
                             var lastattemptsummaryopt2 = {
                                 tooltips: {
@@ -197,10 +197,10 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                     }
                                 }
                             };
-                            var lastattemptsummaryopt = $.extend(totaldata.last_attempt_summary.opt, lastattemptsummaryopt2);
-                            last_attempt_summary = new Chart(ctx1, {
+                            var lastattemptsummaryopt = $.extend(totalData.lastAttemptSummary.opt, lastattemptsummaryopt2);
+                            lastAttemptSummary = new Chart(ctx1, {
                                 type: 'horizontalBar',
-                                data: totaldata.last_attempt_summary.data,
+                                data: totalData.lastAttemptSummary.data,
                                 options: lastattemptsummaryopt
                             });
                         } else {
@@ -227,14 +227,14 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Cut Off Score' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var mixchartopt = $.extend(totaldata.mixchart.opt, mixchartopt2);
+                        var mixchartopt = $.extend(totalData.mixChart.opt, mixchartopt2);
                         var ctx = document.getElementById("mixchart").getContext('2d');
-                        if (mixchart !== undefined) {
-                            mixchart.destroy();
+                        if (mixChart !== undefined) {
+                            mixChart.destroy();
                         }
-                        mixchart = new Chart(ctx, {
+                        mixChart = new Chart(ctx, {
                             type: 'line',
-                            data: totaldata.mixchart.data,
+                            data: totalData.mixChart.data,
                             options: mixchartopt
                         });
                         var timechartopt2 = {
@@ -257,19 +257,19 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Score' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var timechartopt = $.extend(totaldata.timechart.opt, timechartopt2);
+                        var timechartopt = $.extend(totalData.timeChart.opt, timechartopt2);
                         var ctx = document.getElementById("timechart").getContext('2d');
-                        if (timechart !== undefined) {
-                            timechart.destroy();
+                        if (timeChart !== undefined) {
+                            timeChart.destroy();
                         }
-                        timechart = new Chart(ctx, {
+                        timeChart = new Chart(ctx, {
                             type: 'horizontalBar',
-                            data: totaldata.timechart.data,
+                            data: totalData.timeChart.data,
                             options: timechartopt
                         });
                         var ctx = document.getElementById("gradeanalysis").getContext('2d');
-                        if (gradeanalysis !== undefined) {
-                            gradeanalysis.destroy();
+                        if (gradeAnalysis !== undefined) {
+                            gradeAnalysis.destroy();
                         }
                         var gradeanalysisopt2 = {
                             tooltips: {
@@ -286,17 +286,17 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 }
                             }
                         };
-                        var gradeanalysisopt = $.extend(totaldata.gradeanalysis.opt, gradeanalysisopt2);
-                        gradeanalysis = new Chart(ctx, {
+                        var gradeanalysisopt = $.extend(totalData.gradeAnalysis.opt, gradeanalysisopt2);
+                        gradeAnalysis = new Chart(ctx, {
                             type: 'pie',
-                            data: totaldata.gradeanalysis.data,
+                            data: totalData.gradeAnalysis.data,
                             options: gradeanalysisopt
                         });
-                        document.getElementById('js-legendgrade').innerHTML = gradeanalysis.generateLegend();
+                        document.getElementById('js-legendgrade').innerHTML = gradeAnalysis.generateLegend();
                         $("#js-legendgrade > ul > li").on("click", function (legendgrade) {
                             var index = $(this).index();
                             $(this).toggleClass("strike");
-                            var ci = gradeanalysis;
+                            var ci = gradeAnalysis;
                             function first(p) {
                                 for (var i in p) { return p[i] };
                             }
@@ -305,8 +305,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             ci.update();
                         });
                         var ctx = document.getElementById("quesanalysis").getContext('2d');
-                        if (quesanalysis !== undefined) {
-                            quesanalysis.destroy();
+                        if (quesAnalysis !== undefined) {
+                            quesAnalysis.destroy();
                         }
                         var quesanalysisopt2 = {
                             tooltips: {
@@ -325,11 +325,11 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Question Number' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var quesanalysisopt = $.extend(totaldata.quesanalysis.opt, quesanalysisopt2);
+                        var quesanalysisopt = $.extend(totalData.quesAnalysis.opt, quesanalysisopt2);
 
-                        quesanalysis = new Chart(ctx, {
+                        quesAnalysis = new Chart(ctx, {
                             type: 'line',
-                            data: totaldata.quesanalysis.data,
+                            data: totalData.quesAnalysis.data,
                             options: quesanalysisopt
                         });
                         var hardestquesopt2 = {
@@ -353,7 +353,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var hardestquesopt = $.extend(totaldata.hardestques.opt, hardestquesopt2);
+                        var hardestquesopt = $.extend(totalData.hardestques.opt, hardestquesopt2);
 
                         var ctx = document.getElementById("hardestques").getContext('2d');
                         if (hardestques !== undefined) {
@@ -361,61 +361,73 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         }
                         hardestques = new Chart(ctx, {
                             type: 'bar',
-                            data: totaldata.hardestques.data,
+                            data: totalData.hardestques.data,
                             options: hardestquesopt
                         });
                     }
                 })
                 var canvasquesanalysis = document.getElementById("quesanalysis");
                 var canvashardestques = document.getElementById("hardestques");
-                if(canvasquesanalysis){
+                if (canvasquesanalysis) {
                     canvasquesanalysis.onclick = function (qevt) {
-                        var activePoints = quesanalysis.getElementsAtEvent(qevt);
+                        var activePoints = quesAnalysis.getElementsAtEvent(qevt);
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
-                        if (all_questions !== undefined) {
-                            $.each(all_questions, function (i, quesid) {
+                        if (allQuestions !== undefined) {
+                            var quesPage = 0;
+                            $.each(allQuestions, function (i, quesid) {
                                 if (label == quesid.split(",")[0]) {
                                     var quesid = quesid.split(",")[1];
-                                    var id = quiz_id;
-                                    var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
+                                    var id = quizid;
+                                    if (quesPage == 0) {
+                                        var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastUserQuizAttemptID + '&showall=' + 0, '', 'height=500,width=800');
+                                    } else {
+                                        var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastUserQuizAttemptID + '&page=' + quesPage, '', 'height=500,width=800');
+                                    }
                                     if (window.focus) {
                                         newwindow.focus();
                                     }
                                     return false;
                                 }
+                                quesPage++;
                             });
                         }
                     };
                 }
-                if(canvashardestques){
+                if (canvashardestques) {
                     canvashardestques.onclick = function (aqevt) {
                         var activePoints = hardestques.getElementsAtEvent(aqevt);
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
-                        if (all_questions !== undefined) {
-                            $.each(all_questions, function (i, quesid) {
+                        if (allQuestions !== undefined) {
+                            var quesPage = 0;
+                            $.each(allQuestions, function (i, quesid) {
                                 if (label == quesid.split(",")[0]) {
                                     var quesid = quesid.split(",")[1];
-                                    var id = quiz_id;
-                                    var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
+                                    var id = quizid;
+                                    if (quesPage == 0) {
+                                        var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastUserQuizAttemptID + '&showall=' + 0, 'height=500,width=800');
+                                    } else {
+                                        var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastUserQuizAttemptID + '&page=' + quesPage, 'height=500,width=800');
+                                    }
                                     if (window.focus) {
                                         newwindow.focus();
                                     }
                                     return false;
                                 }
+                                quesPage++;
                             });
                         }
                     };
                 }
-                
+
             });
             $("#viewanalytic").one("click", function () {
                 $(".showanalytics").find("canvas").each(function () {
                     var canvasid = $(this).attr("id");
-                    $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + user_id + '" data-canvas_id="' + canvasid + '"></div></div>');
+                    $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="' + canvasid + '"></div></div>');
                 });
             });
             $('body').on('click', '.download-canvas', function () {

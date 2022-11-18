@@ -91,3 +91,4 @@ $string['unattempted'] = 'Unattempted';
 $string['score'] = 'Score';
 $string['cutoffscore'] = 'Cut Off Score';
 $string['timetaken'] = 'Attempts Snapshot (Time Taken: ';
+?>

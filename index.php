@@ -22,33 +22,25 @@
  * @copyright Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 require_once('../../../config.php');
 require_once($CFG->dirroot . '/grade/lib.php');
-
 $courseid = required_param('id', PARAM_INT);
 $userid   = optional_param('userid', $USER->id, PARAM_INT);
-
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/grade/report/quizanalytics/index.php', array('id' => $courseid)));
 $PAGE->requires->css('/grade/report/quizanalytics/css/bootstrap.min.css', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/Chart.js', true);
-$PAGE->requires->js_call_amd('gradereport_quizanalytics/analytic', 'analytic', array($userid, $courseid));
-
-
+$PAGE->requires->js_call_amd('gradereport_quizanalytics/analytic', 'analytic');
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 5, PARAM_INT);  // How many per page.
 $baseurl = new moodle_url($CFG->wwwroot . '/grade/report/quizanalytics/index.php', array('id' => $courseid, 'perpage' => $perpage));
-
 // Basic access checks.
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
   print_error('nocourseid');
 }
 require_login($course);
 $PAGE->set_pagelayout('report');
-
 $context = context_course::instance($course->id);
 require_capability('gradereport/quizanalytics:view', $context);
-
 if (empty($userid)) {
   require_capability('moodle/grade:viewall', $context);
 } else {
@@ -56,7 +48,6 @@ if (empty($userid)) {
     print_error('invaliduser');
   }
 }
-
 $access = false;
 if (has_capability('moodle/grade:viewall', $context)) {
   // Ok - can view all course grades.
@@ -68,22 +59,17 @@ if (has_capability('moodle/grade:viewall', $context)) {
   // Ok - can view grades of this quizanalytics- parent most probably.
   $access = true;
 }
-
 if (!$access) {
   // No access to grades!
   print_error('nopermissiontoviewgrades', 'error',  $CFG->wwwroot . '/course/view.php?id=' . $courseid);
 }
-
 $gpr = new grade_plugin_return(array('type' => 'report', 'plugin' => 'overview', 'courseid' => $course->id, 'userid' => $userid));
-
 if (!isset($USER->grade_last_report)) {
   $USER->grade_last_report = array();
 }
 $USER->grade_last_report[$course->id] = 'overview';
-
 // First make sure we have proper final grades - this must be done before constructing of the grade tree.
 grade_regrade_final_grades($courseid);
-
 // Print the page.
 print_grade_page_head(
   $courseid,
@@ -92,11 +78,9 @@ print_grade_page_head(
   get_string('pluginname', 'gradereport_quizanalytics') . ' - ' . $USER->firstname
     . ' ' . $USER->lastname
 );
-
 $qanalyticsformatoptions = new stdClass();
 $qanalyticsformatoptions->noclean = true;
 $qanalyticsformatoptions->overflowdiv = false;
-
 $getquiz = array();
 $getquizrec = array();
 $quizcount = 0;
@@ -117,16 +101,13 @@ if (!$getquiz) {
   $table->head[] = get_string('quizname', 'gradereport_quizanalytics');
   $table->head[] = get_string('noofattempts', 'gradereport_quizanalytics');
   $table->head[] = get_string('action', 'gradereport_quizanalytics');
-
   foreach ($getquiz as $getquizkey => $getquizval) {
     $getquizattemptsnotgraded = $DB->get_records_sql("SELECT * FROM {quiz_attempts}
             WHERE state = 'finished' AND sumgrades IS NULL AND quiz = ? AND userid = ?", array($getquizval->id, $USER->id));
-
     $getquizattempts = $DB->get_records('quiz_attempts', array(
       'quiz' => $getquizval->id,
       'userid' => $USER->id, 'state' => 'finished'
     ));
-
     $getmoduleid = $DB->get_record_sql("SELECT cm.id FROM {course_modules} cm,
                 {modules} m, {quiz} q WHERE m.name = 'quiz' AND cm.module = m.id
                 AND cm.course = q.course AND cm.instance = q.id AND q.id = ?", array($getquizval->id));
@@ -135,7 +116,6 @@ if (!$getquiz) {
     } else {
       $quizviewurl = "#";
     }
-
     $row = array();
     $row[] = "<a href='" . $quizviewurl . "'>" . format_text($getquizval->name, "", $qanalyticsformatoptions) . "</a>";
     $row[] = count($getquizattempts);
@@ -150,14 +130,12 @@ if (!$getquiz) {
     $table->data[] = $row;
   }
 }
-
 if (!empty($table)) {
   echo html_writer::start_tag('div', array('class' => 'no-overflow display-table'));
   echo html_writer::table($table);
   echo html_writer::end_tag('div');
   echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
 }
-
 $html = '<div class="showanalytics">
                     <div class="tabbable parentTabs">
                         <ul class="nav nav-tabs alyticsul">
@@ -282,54 +260,44 @@ $html = '<div class="showanalytics">
                         </div>
                     </div>
                 </div>';
-
 echo $html;
-
 echo $OUTPUT->footer();
 ?>
 <style>
   #page-grade-report-quizanalytics-index .paging {
     padding: 10px 5px;
   }
-
   .showanalytics {
     margin-top: 20px;
   }
-
   .showanalytics .tabbable {
     border: 1px solid #c5c5c5;
     border-radius: 3px;
   }
-
   .showanalytics .tabbable ul.nav-tabs {
     padding-left: 6px;
     padding-top: 6px;
     border-bottom: 1px solid #dadada;
   }
-
   .showanalytics .parentTabs .tab-content {
     padding: 15px 20px;
     position: relative;
     text-align: center;
   }
-
   .showanalytics ul.nav-tabs li a {
     border: 1px solid #CCCCCC !important;
     padding: .5em 1em;
   }
-
   .showanalytics .nav>li>a:hover,
   .showanalytics .nav>li>a:focus {
     background-color: transparent;
   }
-
   .showanalytics ul.nav-tabs li.active a {
     color: #333333 !important;
     background: #EEEEEE !important;
     border: 1px solid #8FA7BC !important;
     border-bottom: none !important;
   }
-
   .chart-legend ul {
     width: auto;
     margin-left: 20%;
@@ -338,7 +306,6 @@ echo $OUTPUT->footer();
     text-align: left;
     border-bottom: none !important;
   }
-
   .chart-legend ul li {
     display: inline-block;
     vertical-align: top;
@@ -349,7 +316,6 @@ echo $OUTPUT->footer();
     text-align: left;
     width: 48%;
   }
-
   .chart-legend li span {
     display: inline-block;
     width: 12px;
@@ -359,11 +325,9 @@ echo $OUTPUT->footer();
     left: 0;
     top: 2px;
   }
-
   .strike {
     text-decoration: line-through !important;
   }
-
   .download-canvas {
     display: inline-block;
     background: #f8f8f8 url(pix/downloadicon.png) center center no-repeat;
@@ -377,60 +341,49 @@ echo $OUTPUT->footer();
     vertical-align: top;
     cursor: pointer;
   }
-
   .downloadandshare {
     position: absolute;
     top: 15px;
     right: 15px;
     cursor: auto;
   }
-
   #subtab23 .attemptssnapshot .span6 {
     position: relative;
     padding-bottom: 20px !important;
   }
-
   .navbar .popover-region-toggle,
   .jsenabled .moodle-actionmenu[data-enhance] .toggle-display.textmenu {
     display: inline !important;
   }
-
   .showanalytics,
   #dialogbox {
     display: none;
   }
-
   #dialogbox {
     text-align: center;
     padding-top: 20px;
   }
-
   .showanalytics .tab-content .tab-pane .canvas-wrap label {
     margin-top: 50px;
   }
-
   #page-grade-report-quizanalytics-index .nav-collapse.collapse {
     display: block;
     height: auto !important;
   }
-
   @media (min-width: 768px) {
     #subtab23 .attemptssnapshot .span6 {
       padding-bottom: 15px !important;
     }
-
     .showanalytics .span6 label {
       margin-top: 0px !important;
     }
   }
-
   @media (max-width: 1500px) {
     #subtab23 .span6 .downloadandshare {
       top: 5px;
       right: -15px;
     }
   }
-
   @media (max-width: 1280px) {
     #subtab23 .span6 .downloadandshare {
       position: relative;
@@ -438,7 +391,6 @@ echo $OUTPUT->footer();
       right: 0px !important;
     }
   }
-
   @media (max-width: 1152px) {
     .showanalytics .nav-tabs>li>a {
       padding-right: 4px !important;
@@ -446,140 +398,110 @@ echo $OUTPUT->footer();
       font-size: 13px;
     }
   }
-
   @media (max-width: 980px) {
     #page-grade-report-quizanalytics-index .nav-collapse.collapse {
       display: none;
     }
-
     .chart-legend ul li {
       font-size: 13px;
     }
-
     .showanalytics .tabbable ul.nav-tabs li {
       white-space: normal;
       text-align: left;
       width: 100%;
     }
-
     .showanalytics .tabbable ul.nav-tabs {
       padding-right: 3px;
     }
-
     .showanalytics .nav-tabs>li>a {
       padding-right: 10px !important;
       padding-left: 10px !important;
       font-size: 14px;
     }
   }
-
   @media (max-width: 768px) {
     .downloadandshare {
       position: relative;
       top: 10px;
     }
-
     .showanalytics .tab-content .tab-pane .canvas-wrap label {
       margin-top: 0px !important;
     }
-
     .showanalytics .tab-content p {
       margin: 10px 0 10px;
     }
-
   }
-
   @media (max-width: 480px) {
-
     .canvas-wrap,
     .canvas-wrap~p {
       width: 500px;
     }
-
     .mobile_overflow {
       overflow: auto;
     }
   }
-
   /**add for boost*/
   #page-grade-report-quizanalytics-index header.pos-f-t {
     position: fixed !important;
     margin-bottom: 0px !important;
     padding: 7px 15px;
   }
-
   #page-grade-report-quizanalytics-index .container-fluid.navbar-nav {
     float: none;
   }
-
   #page-grade-report-quizanalytics-index #page-footer .container {
     max-width: 100%;
   }
-
   #page-grade-report-quizanalytics-index .usermenu .dropdown-toggle::after {
     display: none;
   }
-
   #page-grade-report-quizanalytics-index .navbar-nav.hidden-md-down {
     float: none;
   }
-
   #page-grade-report-quizanalytics-index .navbar-light .navbar-nav .nav-link {
     font-size: 1.2rem;
   }
-
   #page-grade-report-quizanalytics-index .navbar .popover-region {
     margin-top: 10px;
   }
-
   #page-grade-report-quizanalytics-index .popover-region-toggle::before,
   #page-grade-report-quizanalytics-index .popover-region-toggle::after {
     bottom: -10px;
   }
-
   #page-grade-report-quizanalytics-index .action-menu .dropdown .dropdown-menu {
     margin: 11px 0 0;
   }
-
   #page-grade-report-quizanalytics-index .navbar>.container-fluid .navbar-brand {
     height: auto;
     padding: 7px 10px;
   }
-
   /*Header*/
   @media (min-width: 768px) {
-
     #page-grade-report-quizanalytics-index .navbar>.container .navbar-brand,
     .navbar>.container-fluid .navbar-brand {
       margin-left: 0;
     }
   }
-
   #page-grade-report-quizanalytics-index header.navbar nav.navbar-nav {
     margin-top: 6px;
   }
-
   #page-grade-report-quizanalytics-index header.navbar button.btn {
     margin-top: 3px;
   }
-
   #page-grade-report-quizanalytics-index button.btn-secondary,
   button.btn-default {
     border-color: #ccc;
   }
-
   @media (max-width: 767px) {
     #page-grade-report-quizanalytics-index .navbar-nav .open .dropdown-menu {
       background-color: #fff !important;
       border: 1px solid #e2e2e2 !important;
       border-radius: unset;
     }
-
     #page-grade-report-quizanalytics-index header .navbar-nav .open .dropdown-menu {
       position: absolute;
       right: 0
     }
-
     #page-grade-report-quizanalytics-index .pos-f-t .navbar-nav {
       margin: auto !important;
     }

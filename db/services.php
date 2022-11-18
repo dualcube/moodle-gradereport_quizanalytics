@@ -20,3 +20,4 @@ $functions = array(
         'loginrequired' => true
     )
 );
+?>
