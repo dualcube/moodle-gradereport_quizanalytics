@@ -1,7 +1,7 @@
 define(['jquery', 'core/ajax'], function ($, ajax) {
     return {
         analytic: function (user_id, course_id) {
-            var lastattemptsummary, loggedinuser, mixchart, allusers, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, allquestions, quizid, rooturl, userid, lastuserquizattemptid;
+            var last_attempt_summary, loggedin_user, mixchart, all_users, questionpercat, timechart, gradeanalysis, quesanalysis, hardestques, all_questions, quiz_id, rooturl, user_id, lastuserquizattemptid;
             var attemptssnapshot_arr = [];
             Chart.plugins.register({
                 beforeDraw: function (chartInstance) {
@@ -11,18 +11,18 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 }
             });
             $(".viewanalytic").click(function () {
-                var quizid = $(this).data('quize_id');
+                var quiz_id = $(this).data('quiz_id');
                 var promises = ajax.call([
                     {
                         methodname: 'moodle_quizanalytics_analytic',
-                        args: { quizid: quizid },
+                        args: { quiz_id: quiz_id },
                     }
                 ]);
                 promises[0].done(function (data) {
                     if (data) {
                         var totaldata = jQuery.parseJSON(data);
-                        allquestions = totaldata.allquestion;
-                        quizid = totaldata.quizid;
+                        all_questions = totaldata.allquestion;
+                        quiz_id = totaldata.quiz_id;
                         rooturl = totaldata.url;
                         lastuserquizattemptid = totaldata.lastuserquizattemptid;
                         $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
@@ -76,7 +76,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 },
                             };
                             var attemptssnapshotopt = $.extend(totaldata.attemptssnapshot.opt[key], attemptssnapshotopt2);
-                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
+                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + user_id + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
                             var ctx = document.getElementById("attemptssnapshot" + key).getContext('2d');
                             var attemptssnapshot = new Chart(ctx, {
                                 type: 'doughnut',
@@ -139,14 +139,14 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var allusersopt = $.extend(totaldata.allusers.opt, allusersopt2);
+                        var allusersopt = $.extend(totaldata.all_users.opt, allusersopt2);
                         var ctx = document.getElementById("allusers").getContext('2d');
-                        if (allusers !== undefined) {
-                            allusers.destroy();
+                        if (all_users !== undefined) {
+                            all_users.destroy();
                         }
-                        allusers = new Chart(ctx, {
+                        all_users = new Chart(ctx, {
                             type: 'bar',
-                            data: totaldata.allusers.data,
+                            data: totaldata.all_users.data,
                             options: allusersopt
                         });
                         var loggedinuseropt2 = {
@@ -159,24 +159,24 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             },
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Hardness in percentage (%)' }, ticks: { beginAtZero: true, max: 100, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
-                        var loggedinuseropt = $.extend(totaldata.loggedinuser.opt, loggedinuseropt2);
+                        var loggedinuseropt = $.extend(totaldata.loggedin_user.opt, loggedinuseropt2);
                         var ctx = document.getElementById("loggedinuser").getContext('2d');
-                        if (loggedinuser !== undefined) {
-                            loggedinuser.destroy();
+                        if (loggedin_user !== undefined) {
+                            loggedin_user.destroy();
                         }
-                        loggedinuser = new Chart(ctx, {
+                        loggedin_user = new Chart(ctx, {
                             type: 'bar',
-                            data: totaldata.loggedinuser.data,
+                            data: totaldata.loggedin_user.data,
                             options: loggedinuseropt
                         });
-                        if (totaldata.lastattemptsummary.data != 0 && totaldata.lastattemptsummary.opt != 0) {
+                        if (totaldata.last_attempt_summary.data != 0 && totaldata.last_attempt_summary.opt != 0) {
                             $(".showanalytics").find(".noquesisattempted").hide();
                             $(".showanalytics").find("#lastattemptsummary").show();
                             var ctx = document.getElementById("lastattemptsummary");
                             ctx.height = 100;
                             var ctx1 = ctx.getContext('2d');
-                            if (lastattemptsummary !== undefined) {
-                                lastattemptsummary.destroy();
+                            if (last_attempt_summary !== undefined) {
+                                last_attempt_summary.destroy();
                             }
                             var lastattemptsummaryopt2 = {
                                 tooltips: {
@@ -197,10 +197,10 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                     }
                                 }
                             };
-                            var lastattemptsummaryopt = $.extend(totaldata.lastattemptsummary.opt, lastattemptsummaryopt2);
-                            lastattemptsummary = new Chart(ctx1, {
+                            var lastattemptsummaryopt = $.extend(totaldata.last_attempt_summary.opt, lastattemptsummaryopt2);
+                            last_attempt_summary = new Chart(ctx1, {
                                 type: 'horizontalBar',
-                                data: totaldata.lastattemptsummary.data,
+                                data: totaldata.last_attempt_summary.data,
                                 options: lastattemptsummaryopt
                             });
                         } else {
@@ -374,11 +374,11 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
-                        if (allquestions !== undefined) {
-                            $.each(allquestions, function (i, quesid) {
+                        if (all_questions !== undefined) {
+                            $.each(all_questions, function (i, quesid) {
                                 if (label == quesid.split(",")[0]) {
                                     var quesid = quesid.split(",")[1];
-                                    var id = quizid;
+                                    var id = quiz_id;
                                     var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
                                     if (window.focus) {
                                         newwindow.focus();
@@ -395,11 +395,11 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
-                        if (allquestions !== undefined) {
-                            $.each(allquestions, function (i, quesid) {
+                        if (all_questions !== undefined) {
+                            $.each(all_questions, function (i, quesid) {
                                 if (label == quesid.split(",")[0]) {
                                     var quesid = quesid.split(",")[1];
-                                    var id = quizid;
+                                    var id = quiz_id;
                                     var newwindow = window.open(rooturl + '/mod/quiz/review.php?attempt=' + lastuserquizattemptid + '&page=' + quesid, '', 'height=500,width=800');
                                     if (window.focus) {
                                         newwindow.focus();
@@ -415,7 +415,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
             $("#viewanalytic").one("click", function () {
                 $(".showanalytics").find("canvas").each(function () {
                     var canvasid = $(this).attr("id");
-                    $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="' + canvasid + '"></div></div>');
+                    $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + user_id + '" data-canvas_id="' + canvasid + '"></div></div>');
                 });
             });
             $('body').on('click', '.download-canvas', function () {
