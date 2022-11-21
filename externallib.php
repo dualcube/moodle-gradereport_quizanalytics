@@ -630,7 +630,7 @@ class moodle_gradereport_quizanalytics_external extends external_api
             $quesanalysisopt = array('title' => array('display' => false), 'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)));
             $totalarray = array();
             $totalarray = array(
-                'questionPerCat' => array(
+                'questionPerCategories' => array(
                     'data' => $questionpercatdata,
                     'opt' => $questionpercatopt
                 ),
@@ -666,12 +666,12 @@ class moodle_gradereport_quizanalytics_external extends external_api
                     'data' => $quesanalysisdata,
                     'opt' => $quesanalysisopt
                 ),
-                'hardestques' => array(
+                'hardestQuestions' => array(
                     'data' => $hardestquesdata,
                     'opt' => $hardestquesopt
                 ),
-                'userattempts' => count($usersgradedattempts),
-                'quizattempt' => $quiz->attempts,
+                'userAttempts' => count($usersgradedattempts),
+                'quizAttempt' => $quiz->attempts,
                 'allQuestions' => $selectedquestionid,
                 'quizid' => $quizid,
                 'lastUserQuizAttemptID' => $lastUserQuizAttemptID->quizattid,
