@@ -19,8 +19,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                     }
                 ]);
                 promises[0].done(function (data) {
-                    if (data) {
-                        var totalData = jQuery.parseJSON(data);
+                    var totalData = jQuery.parseJSON(data);
+                    if (totalData) {    
                         allQuestions = totalData.allQuestions;
                         quizid = totalData.quizid;
                         rooturl = totalData.url;
