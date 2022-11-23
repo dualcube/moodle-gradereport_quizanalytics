@@ -96,7 +96,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             });
                             attemptsSnapshotArray.push(attemptsSnapshot);
                         });
-                        var chartConvention = document.getElementById("questionpercat").getContext('2d');
+                        var chartConvention = document.getElementById("questionpercategories").getContext('2d');
                         if (questionPerCategories !== undefined) {
                             questionPerCategories.destroy();
                         }
@@ -301,7 +301,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             currentTab.hidden = !currentTab.hidden
                             gradeAnalysis.update();
                         });
-                        var chartConvention = document.getElementById("quesanalysis").getContext('2d');
+                        var chartConvention = document.getElementById("questionanalysis").getContext('2d');
                         if (quesAnalysis !== undefined) {
                             quesAnalysis.destroy();
                         }
@@ -362,7 +362,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         });
                     }
                 })
-                var canvasQuestionAnalysis = document.getElementById("quesanalysis");
+                var canvasQuestionAnalysis = document.getElementById("questionanalysis");
                 if (canvasQuestionAnalysis) {
                     canvasQuestionAnalysis.onclick = function (questionevent) {
                         var activePoints = quesAnalysis.getElementsAtEvent(questionevent);
@@ -392,8 +392,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 }
                 var canvasHardestQuestions = document.getElementById("hardest-questions");
                 if (canvasHardestQuestions) {
-                    canvasHardestQuestions.onclick = function (attemptevent) {
-                        var activePoints = hardestQuestions.getElementsAtEvent(attemptevent);
+                    canvasHardestQuestions.onclick = function (questionevent) {
+                        var activePoints = hardestQuestions.getElementsAtEvent(questionevent);
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
