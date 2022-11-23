@@ -190,7 +190,7 @@ $html = '<div class="showanalytics">
                                         </div>
                                         <div id="subtab22" class="tab-pane fade in mobile-overflow">
                                             <div class="canvas-wrap"><label style="width:700px;">
-                                                <canvas id="hardestques"></canvas>
+                                                <canvas id="hardest-questions"></canvas>
                                             </lable></div>
                                             <p>' . get_string('hardestquesdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
@@ -216,7 +216,7 @@ $html = '<div class="showanalytics">
                                     </ul>
                                     <div class="tab-content">
                                         <div id="subtab31" class="tab-pane fade in mobile-overflow active show">
-                                            <label style="width:400px; margin: 0 auto;"><canvas id="questionpercat"></canvas>
+                                            <label style="width:400px; margin: 0 auto;"><canvas id="questionpercategories"></canvas>
                                             <div id="js-legendqpc" class="chart-legend"></div></label>
                                             <p>' . get_string('questionpercatdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
@@ -251,7 +251,7 @@ $html = '<div class="showanalytics">
                                         </div>
                                         <div id="subtab42" class="tab-pane fade in mobile-overflow">
                                             <div class="canvas-wrap"><label style="width:700px;">
-                                            <canvas id="quesanalysis"></canvas></lable></div>
+                                            <canvas id="questionanalysis"></canvas></lable></div>
                                             <p>' . get_string('quesananalysisdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
                                     </div>

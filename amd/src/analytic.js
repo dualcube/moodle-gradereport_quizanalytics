@@ -351,7 +351,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
                         var Options = $.extend(totalData.hardestQuestions.opt, option);
-                        var chartConvention = document.getElementById("hardestques").getContext('2d');
+                        var chartConvention = document.getElementById("hardest-questions").getContext('2d');
                         if (hardestQuestions !== undefined) {
                             hardestQuestions.destroy();
                         }
@@ -390,7 +390,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         }
                     };
                 }
-                var canvasHardestQuestions = document.getElementById("hardestques");
+                var canvasHardestQuestions = document.getElementById("hardest-questions");
                 if (canvasHardestQuestions) {
                     canvasHardestQuestions.onclick = function (attemptevent) {
                         var activePoints = hardestQuestions.getElementsAtEvent(attemptevent);
