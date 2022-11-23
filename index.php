@@ -154,12 +154,12 @@ $html = '<div class="showanalytics">
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane mobile_overflow fade active in" id="tabs-1">
+                            <div class="tab-pane mobile-overflow fade active in" id="tabs-1">
                                 <div class="canvas-wrap"><label style="width:850px;"><canvas id="lastattemptsummary"></canvas></label></div>
                                 <p class="lastattemptsummarydes">' . get_string('lastattemptsummarydes', 'gradereport_quizanalytics') . '</p>
                                 <p class="attemptsummarydes">' . get_string('attemptsummarydes', 'gradereport_quizanalytics') . '</p>
                             </div>
-                            <div class="tab-pane mobile_overflow fade in" id="tabs-2">
+                            <div class="tab-pane mobile-overflow fade in" id="tabs-2">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs alyticsul">
                                         <li class="active"><a href="#subtab21">
@@ -170,7 +170,7 @@ $html = '<div class="showanalytics">
                                         <li class="active"><a href="#subtab23">' . get_string('tab2subtab3', 'gradereport_quizanalytics') . '</a></li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div id="subtab21" class="tab-pane fade in mobile_overflow active show">
+                                        <div id="subtab21" class="tab-pane fade in mobile-overflow active show">
                                             <div class="subtabmix">
                                                 <div class="canvas-wrap">
                                                     <label style="width:700px;">
@@ -188,20 +188,20 @@ $html = '<div class="showanalytics">
                                                 <p>' . get_string('timechartdes', 'gradereport_quizanalytics') . '</p>
                                             </div>
                                         </div>
-                                        <div id="subtab22" class="tab-pane fade in mobile_overflow">
+                                        <div id="subtab22" class="tab-pane fade in mobile-overflow">
                                             <div class="canvas-wrap"><label style="width:700px;">
                                                 <canvas id="hardestques"></canvas>
                                             </lable></div>
                                             <p>' . get_string('hardestquesdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
-                                        <div id="subtab23" class="tab-pane fade in mobile_overflow">
+                                        <div id="subtab23" class="tab-pane fade in mobile-overflow">
                                             <div class="span12 attemptssnapshot"></div>
                                             <p>' . get_string('attemptssnapshotdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane mobile_overflow fade in" id="tabs-3">
+                            <div class="tab-pane mobile-overflow fade in" id="tabs-3">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs alyticsul">
                                         <li class="active">
@@ -215,17 +215,17 @@ $html = '<div class="showanalytics">
                                         </li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div id="subtab31" class="tab-pane fade in mobile_overflow active show">
+                                        <div id="subtab31" class="tab-pane fade in mobile-overflow active show">
                                             <label style="width:400px; margin: 0 auto;"><canvas id="questionpercat"></canvas>
                                             <div id="js-legendqpc" class="chart-legend"></div></label>
                                             <p>' . get_string('questionpercatdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
-                                        <div id="subtab32" class="tab-pane fade in mobile_overflow">
+                                        <div id="subtab32" class="tab-pane fade in mobile-overflow">
                                            <div class="canvas-wrap"><label style="width:700px;"><canvas id="allusers"></canvas>
                                             </label></div>
                                             <p>' . get_string('allusersdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
-                                        <div id="subtab33" class="tab-pane fade in mobile_overflow">
+                                        <div id="subtab33" class="tab-pane fade in mobile-overflow">
                                             <div class="canvas-wrap"><label style="width:700px;">
                                             <canvas id="loggedinuser"></canvas></label></div>
                                             <p>' . get_string('loggedinuserdes', 'gradereport_quizanalytics') . '</p>
@@ -233,7 +233,7 @@ $html = '<div class="showanalytics">
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane mobile_overflow fade in" id="tabs-4">
+                            <div class="tab-pane mobile-overflow fade in" id="tabs-4">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs alyticsul">
                                         <li class="active">
@@ -244,12 +244,12 @@ $html = '<div class="showanalytics">
                                         </li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div id="subtab41" class="tab-pane fade in mobile_overflow active show">
+                                        <div id="subtab41" class="tab-pane fade in mobile-overflow active show">
                                             <label style="width:400px; margin: 0 auto;"><canvas id="gradeanalysis"></canvas>
                                             <div id="js-legendgrade" class="chart-legend"></div></label>
                                             <p>' . get_string('gradeanalysisdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
-                                        <div id="subtab42" class="tab-pane fade in mobile_overflow">
+                                        <div id="subtab42" class="tab-pane fade in mobile-overflow">
                                             <div class="canvas-wrap"><label style="width:700px;">
                                             <canvas id="quesanalysis"></canvas></lable></div>
                                             <p>' . get_string('quesananalysisdes', 'gradereport_quizanalytics') . '</p>
@@ -341,7 +341,7 @@ echo $OUTPUT->footer();
     vertical-align: top;
     cursor: pointer;
   }
-  .downloadandshare {
+  .download {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -379,13 +379,13 @@ echo $OUTPUT->footer();
     }
   }
   @media (max-width: 1500px) {
-    #subtab23 .span6 .downloadandshare {
+    #subtab23 .span6 .download {
       top: 5px;
       right: -15px;
     }
   }
   @media (max-width: 1280px) {
-    #subtab23 .span6 .downloadandshare {
+    #subtab23 .span6 .download {
       position: relative;
       top: -10px !important;
       right: 0px !important;
@@ -420,7 +420,7 @@ echo $OUTPUT->footer();
     }
   }
   @media (max-width: 768px) {
-    .downloadandshare {
+    .download {
       position: relative;
       top: 10px;
     }
@@ -436,7 +436,7 @@ echo $OUTPUT->footer();
     .canvas-wrap~p {
       width: 500px;
     }
-    .mobile_overflow {
+    .mobile-overflow {
       overflow: auto;
     }
   }

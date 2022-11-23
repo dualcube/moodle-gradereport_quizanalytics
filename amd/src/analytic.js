@@ -26,11 +26,11 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                         rooturl = totalData.url;
                         lastUserQuizAttemptID = totalData.lastUserQuizAttemptID;
                         $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
-                        $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").hide();
+                        $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").hide();
                         $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
                         if (totalData.userAttempts > 1) {
                             $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").show();
-                            $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").show();
+                            $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
                             $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").hide();
                         }
                         setTimeout(function () {
@@ -38,7 +38,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 $(this).tab('show');
                                 // Center scroll on mobile.
                                 if ($(window).width() < 480) {
-                                    var outerContent = $('.mobile_overflow');
+                                    var outerContent = $('.mobile-overflow');
                                     var innerContent = $('.canvas-wrap');
                                     if (outerContent.length > 0) {
                                         outerContent.scrollLeft((innerContent.width() - outerContent.width()) / 2);
@@ -76,7 +76,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 },
                             };
                             var Options = $.extend(totalData.attemptssnapshot.opt[key], option);
-                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="downloadandshare"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="attemptssnapshot' + key + '"></div></div></div>');
+                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="download"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a></div></div>');
                             var chartConvention = document.getElementById("attemptssnapshot" + key).getContext('2d');
                             var attemptsSnapshot = new Chart(chartConvention, {
                                 type: 'doughnut',
@@ -168,7 +168,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             options: Options
                         });
                         if (totalData.lastAttemptSummary.data != 0 && totalData.lastAttemptSummary.opt != 0) {
-                            $(".showanalytics").find(".noquesisattempted").hide();
+                            $(".showanalytics").find(".unattempted").hide();
                             $(".showanalytics").find("#lastattemptsummary").show();
                             var chartConvention = document.getElementById("lastattemptsummary");
                             chartConvention.height = 100;
@@ -203,7 +203,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             });
                         } else {
                             $(".showanalytics").find("#lastattemptsummary").hide();
-                            $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="noquesisattempted"><b>Please attempt at least one question.</b></p>');
+                            $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="unattempted"><b>Please attempt at least one question.</b></p>');
                         }
                         var option = {
                             tooltips: {
@@ -351,7 +351,6 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
                         var Options = $.extend(totalData.hardestQuestions.opt, option);
-
                         var chartConvention = document.getElementById("hardestques").getContext('2d');
                         if (hardestQuestions !== undefined) {
                             hardestQuestions.destroy();
@@ -365,8 +364,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 })
                 var canvasQuestionAnalysis = document.getElementById("quesanalysis");
                 if (canvasQuestionAnalysis) {
-                    canvasQuestionAnalysis.onclick = function (qevt) {
-                        var activePoints = quesAnalysis.getElementsAtEvent(qevt);
+                    canvasQuestionAnalysis.onclick = function (questionevent) {
+                        var activePoints = quesAnalysis.getElementsAtEvent(questionevent);
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
@@ -393,8 +392,8 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                 }
                 var canvasHardestQuestions = document.getElementById("hardestques");
                 if (canvasHardestQuestions) {
-                    canvasHardestQuestions.onclick = function (aqevt) {
-                        var activePoints = hardestQuestions.getElementsAtEvent(aqevt);
+                    canvasHardestQuestions.onclick = function (attemptevent) {
+                        var activePoints = hardestQuestions.getElementsAtEvent(attemptevent);
                         var chartData = activePoints[0]['_chart'].config.data;
                         var idx = activePoints[0]['_index'];
                         var label = chartData.labels[idx];
@@ -424,7 +423,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
             $("#viewanalytic").one("click", function () {
                 $(".showanalytics").find("canvas").each(function () {
                     var canvasid = $(this).attr("id");
-                    $(this).parent().append('<div class="downloadandshare"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a><div class="shareBtn" data-user_id="' + userid + '" data-canvas_id="' + canvasid + '"></div></div>');
+                    $(this).parent().append('<div class="download"><a class="download-canvas" data-canvas_id="' + canvasid + '"></a></div>');
                 });
             });
             $('body').on('click', '.download-canvas', function () {
