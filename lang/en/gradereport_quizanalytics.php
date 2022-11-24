@@ -57,7 +57,6 @@ $string['loggedinuserdes'] = 'Lets have a look the categories you have fared not
 $string['tab4subtab1'] = 'Scores by Percentage (All Users)';
 $string['gradeanalysisdes'] = 'Number of users in each percentage (score percentage) group.';
 $string['quesananalysisdes'] = 'The curves here depict how the users fared in each question. Clicking on the circles dedicated to each question will show the question itself along with explanation and correct answer.';
-
 //settings
 $string['gradeboundary'] = 'Grade Boundary';
 $string['gradeboundarydes'] = "The grade boundaries are ranges set by the admin which will be displayed on the scores's stats graph.";
@@ -91,4 +90,13 @@ $string['unattempted'] = 'Unattempted';
 $string['score'] = 'Score';
 $string['cutoffscore'] = 'Cut Off Score';
 $string['timetaken'] = 'Attempts Snapshot (Time Taken: ';
+//analytic.js
+$string['zeroattempt'] = 'Please attempt at least one question.';
+$string['hardestcategories'] = 'Hardest Categories';
+$string['hardestcategoriespercentage'] = 'Hardness in percentage (%)';
+$string['numberofattempts'] = 'Number of Attempts';
+$string['cutOffscore'] = 'Cut Off Score';
+$string['score'] = 'Score';
+$string['questionnumber'] = 'Question Number';
+$string['questionreview'] = "(Click to Review Question & Last Attempt)";
 ?>

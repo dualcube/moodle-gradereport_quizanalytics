@@ -1,6 +1,6 @@
-define(['jquery', 'core/ajax'], function ($, ajax) {
+define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
     return {
-        analytic: function () {
+        analytic: function (unattempted) {
             var lastAttemptSummary, loggedInUser, mixChart, allUsers, questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, quizid, rooturl, userid, lastUserQuizAttemptID;
             var attemptsSnapshotArray = [];
             Chart.plugins.register({
@@ -76,7 +76,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                 },
                             };
                             var Options = $.extend(totalData.attemptssnapshot.opt[key], option);
-                            $('.attemptssnapshot').append('<div class="span6"><label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="download"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a></div></div>');
+                            $('.attemptssnapshot').append('<label><canvas id="attemptssnapshot' + key + '"></canvas><div id="js-legend' + key + '" class="chart-legend"></div></label><div class="download"><a class="download-canvas" data-canvas_id="attemptssnapshot' + key + '"></a></div>');
                             var chartConvention = document.getElementById("attemptssnapshot" + key).getContext('2d');
                             var attemptsSnapshot = new Chart(chartConvention, {
                                 type: 'doughnut',
@@ -203,7 +203,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                             });
                         } else {
                             $(".showanalytics").find("#lastattemptsummary").hide();
-                            $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="unattempted"><b>Please attempt at least one question.</b></p>');
+                            $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="unattempted"><b>' + unattempted + '</b></p>');
                         }
                         var option = {
                             tooltips: {
@@ -348,7 +348,7 @@ define(['jquery', 'core/ajax'], function ($, ajax) {
                                     }
                                 }
                             },
-                            scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Questions' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
+                            scales: { xAxes: [{ scaleLabel: { display: true, labelString: 'Hardest Categories' } }], yAxes: [{ scaleLabel: { display: true, labelString: 'Number of Attempts' }, ticks: { beginAtZero: true, callback: function (value) { if (Number.isInteger(value)) { return value; } } } }] }
                         };
                         var Options = $.extend(totalData.hardestQuestions.opt, option);
                         var chartConvention = document.getElementById("hardest-questions").getContext('2d');

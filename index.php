@@ -137,8 +137,8 @@ if (!empty($table)) {
   echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
 }
 $html = '<div class="showanalytics">
-                    <div class="tabbable parentTabs">
-                        <ul class="nav nav-tabs alyticsul">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs  ">
                             <li class="active">
                                 <a href="#tabs-1"><span class="lastattemptsummary">Last </span>
                                 ' . get_string('tab1', 'gradereport_quizanalytics') . '</a>
@@ -154,14 +154,14 @@ $html = '<div class="showanalytics">
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane mobile-overflow fade active in" id="tabs-1">
+                            <div class="tab-pane mobile-overflow active fade in" id="tabs-1">
                                 <div class="canvas-wrap"><label style="width:850px;"><canvas id="lastattemptsummary"></canvas></label></div>
                                 <p class="lastattemptsummarydes">' . get_string('lastattemptsummarydes', 'gradereport_quizanalytics') . '</p>
                                 <p class="attemptsummarydes">' . get_string('attemptsummarydes', 'gradereport_quizanalytics') . '</p>
                             </div>
                             <div class="tab-pane mobile-overflow fade in" id="tabs-2">
                                 <div class="tabbable">
-                                    <ul class="nav nav-tabs alyticsul">
+                                    <ul class="nav nav-tabs  ">
                                         <li class="active"><a href="#subtab21">
                                             <span class="subtab1">' . get_string('tab2subtab11', 'gradereport_quizanalytics') . '</span>
                                             <span class="subtab2">' . get_string('tab2subtab12', 'gradereport_quizanalytics') . '</span>
@@ -195,7 +195,7 @@ $html = '<div class="showanalytics">
                                             <p>' . get_string('hardestquesdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
                                         <div id="subtab23" class="tab-pane fade in mobile-overflow">
-                                            <div class="span12 attemptssnapshot"></div>
+                                            <div class=" attemptssnapshot"></div>
                                             <p>' . get_string('attemptssnapshotdes', 'gradereport_quizanalytics') . '</p>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@ $html = '<div class="showanalytics">
                             </div>
                             <div class="tab-pane mobile-overflow fade in" id="tabs-3">
                                 <div class="tabbable">
-                                    <ul class="nav nav-tabs alyticsul">
+                                    <ul class="nav nav-tabs  ">
                                         <li class="active">
                                             <a href="#subtab31">' . get_string('tab3subtab1', 'gradereport_quizanalytics') . '</a>
                                         </li>
@@ -235,7 +235,7 @@ $html = '<div class="showanalytics">
                             </div>
                             <div class="tab-pane mobile-overflow fade in" id="tabs-4">
                                 <div class="tabbable">
-                                    <ul class="nav nav-tabs alyticsul">
+                                    <ul class="nav nav-tabs  ">
                                         <li class="active">
                                             <a href="#subtab41">' . get_string('tab4subtab1', 'gradereport_quizanalytics') . '</a>
                                         </li>
@@ -279,7 +279,7 @@ echo $OUTPUT->footer();
     padding-top: 6px;
     border-bottom: 1px solid #dadada;
   }
-  .showanalytics .parentTabs .tab-content {
+  .showanalytics .tab-content {
     padding: 15px 20px;
     position: relative;
     text-align: center;
@@ -347,7 +347,7 @@ echo $OUTPUT->footer();
     right: 15px;
     cursor: auto;
   }
-  #subtab23 .attemptssnapshot .span6 {
+  #subtab23 .attemptssnapshot  {
     position: relative;
     padding-bottom: 20px !important;
   }
@@ -371,21 +371,21 @@ echo $OUTPUT->footer();
     height: auto !important;
   }
   @media (min-width: 768px) {
-    #subtab23 .attemptssnapshot .span6 {
+    #subtab23 .attemptssnapshot{
       padding-bottom: 15px !important;
     }
-    .showanalytics .span6 label {
+    .showanalytics label {
       margin-top: 0px !important;
     }
   }
   @media (max-width: 1500px) {
-    #subtab23 .span6 .download {
+    #subtab23 .download {
       top: 5px;
       right: -15px;
     }
   }
   @media (max-width: 1280px) {
-    #subtab23 .span6 .download {
+    #subtab23  .download {
       position: relative;
       top: -10px !important;
       right: 0px !important;
