@@ -140,34 +140,34 @@ $html = '<div class="showanalytics">
                     <div class="tabbable">
                         <ul class="nav nav-tabs  ">
                             <li class="active">
-                                <a href="#tabs-1"><span class="lastattemptsummary">Last </span>
-                                ' . get_string('tab1', 'gradereport_quizanalytics') . '</a>
+                                <a href="#tabs-1"><span class="last-attempt">Last </span>
+                                ' . get_string('attemptsummary', 'gradereport_quizanalytics') . '</a>
                             </li>
                             <li class="active">
-                                <a href="#tabs-2">' . get_string('tab2', 'gradereport_quizanalytics') . '</a>
+                                <a href="#tabs-2">' . get_string('myprogress', 'gradereport_quizanalytics') . '</a>
                             </li>
                             <li class="active">
-                                <a href="#tabs-3">' . get_string('tab3', 'gradereport_quizanalytics') . '</a>
+                                <a href="#tabs-3">' . get_string('questioncategory', 'gradereport_quizanalytics') . '</a>
                             </li>
                             <li class="active">
-                                <a href="#tabs-4">' . get_string('tab4', 'gradereport_quizanalytics') . '</a>
+                                <a href="#tabs-4">' . get_string('questionstats', 'gradereport_quizanalytics') . '</a>
                             </li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane mobile-overflow active fade in" id="tabs-1">
-                                <div class="canvas-wrap"><label style="width:850px;"><canvas id="lastattemptsummary"></canvas></label></div>
-                                <p class="lastattemptsummarydes">' . get_string('lastattemptsummarydes', 'gradereport_quizanalytics') . '</p>
-                                <p class="attemptsummarydes">' . get_string('attemptsummarydes', 'gradereport_quizanalytics') . '</p>
+                                <div class="canvas-wrap"><label style="width:850px;"><canvas id="lastAttempt"></canvas></label></div>
+                                <p class="last-attempt-des">' . get_string('lastattemptsummarydes', 'gradereport_quizanalytics') . '</p>
+                                <p class="attempt-des">' . get_string('attemptsummarydes', 'gradereport_quizanalytics') . '</p>
                             </div>
                             <div class="tab-pane mobile-overflow fade in" id="tabs-2">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs  ">
                                         <li class="active"><a href="#subtab21">
-                                            <span class="subtab1">' . get_string('tab2subtab11', 'gradereport_quizanalytics') . '</span>
-                                            <span class="subtab2">' . get_string('tab2subtab12', 'gradereport_quizanalytics') . '</span>
+                                            <span class="improvementcurve">' . get_string('improvementcurve', 'gradereport_quizanalytics') . '</span>
+                                            <span class="peerperformance">' . get_string('peerperformance', 'gradereport_quizanalytics') . '</span>
                                         </a></li>
-                                        <li class="active"><a href="#subtab22">' . get_string('tab2subtab2', 'gradereport_quizanalytics') . '</a></li>
-                                        <li class="active"><a href="#subtab23">' . get_string('tab2subtab3', 'gradereport_quizanalytics') . '</a></li>
+                                        <li class="active"><a href="#subtab22">' . get_string('hardestquestion', 'gradereport_quizanalytics') . '</a></li>
+                                        <li class="active"><a href="#subtab23">' . get_string('attemptsnapshot', 'gradereport_quizanalytics') . '</a></li>
                                     </ul>
                                     <div class="tab-content">
                                         <div id="subtab21" class="tab-pane fade in mobile-overflow active show">
@@ -205,13 +205,13 @@ $html = '<div class="showanalytics">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs  ">
                                         <li class="active">
-                                            <a href="#subtab31">' . get_string('tab3subtab1', 'gradereport_quizanalytics') . '</a>
+                                            <a href="#subtab31">' . get_string('questionpercategory', 'gradereport_quizanalytics') . '</a>
                                         </li>
                                         <li class="active">
-                                            <a href="#subtab32">' . get_string('tab3subtab2', 'gradereport_quizanalytics') . '</a>
+                                            <a href="#subtab32">' . get_string('challengingcategoris', 'gradereport_quizanalytics') . '</a>
                                         </li>
                                         <li class="active">
-                                            <a href="#subtab33">' . get_string('tab3subtab3', 'gradereport_quizanalytics') . '</a>
+                                            <a href="#subtab33">' . get_string('challengingcategorisforme', 'gradereport_quizanalytics') . '</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
@@ -237,7 +237,7 @@ $html = '<div class="showanalytics">
                                 <div class="tabbable">
                                     <ul class="nav nav-tabs  ">
                                         <li class="active">
-                                            <a href="#subtab41">' . get_string('tab4subtab1', 'gradereport_quizanalytics') . '</a>
+                                            <a href="#subtab41">' . get_string('scorbrpercent', 'gradereport_quizanalytics') . '</a>
                                         </li>
                                         <li class="active">
                                             <a href="#subtab42">' . get_string('quesanalysis', 'gradereport_quizanalytics') . '</a>
