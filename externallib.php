@@ -422,21 +422,17 @@ class moodle_gradereport_quizanalytics_external extends external_api
             if (!empty($totalquestions)) {
                 foreach ($totalquestions as $totalquestion) {
                     if ($totalquestion->qtype == "essay") {
-                         $totalcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 3 AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedright' OR qas.state = 'mangrright')", array($quizid, $totalquestion->id,$USER->id)
-                        );
-                        $totalincorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 3 AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedwrong' OR qas.state = 'mangrwrong')", array($quizid, $totalquestion->id,$USER->id)
-                        );
-                        $totalpartialcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 3 AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedpartial' OR qas.state = 'mangrpartial')", array($quizid, $totalquestion->id,$USER->id)
-                        );
+                         $sequencenumber = 3;
                     } else {
-                         $totalcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 2 AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedright' OR qas.state = 'mangrright')", array($quizid, $totalquestion->id,$USER->id)
-                        );
-                        $totalincorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 2 AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedwrong' OR qas.state = 'mangrwrong')", array($quizid, $totalquestion->id,$USER->id)
-                        );
-                        $totalpartialcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = 2 AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedpartial' OR qas.state = 'mangrpartial')", array($quizid, $totalquestion->id,$USER->id)
-                        );
-                    } 
-                    $unattempted = count($totalquizattempted) - ($totalcorrectresponse->qnum + $totalincorrectresponse->qnum + $totalpartialcorrectresponse->qnum);
+                        $sequencenumber = 2;
+                    }
+                     $totalcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedright' OR qas.state = 'mangrright')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                    );
+                    $totalincorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedwrong' OR qas.state = 'mangrwrong')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                    );
+                    $totalpartialcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedpartial' OR qas.state = 'mangrpartial')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                    );
+                    $unattempted = count($usersgradedattempts) - ($totalcorrectresponse->qnum + $totalincorrectresponse->qnum + $totalpartialcorrectresponse->qnum);
                     $totalunattempted[] = $unattempted;
                     $correctresponse[] = $totalcorrectresponse->qnum;
                     $incorrectresponse[] = $totalincorrectresponse->qnum;
