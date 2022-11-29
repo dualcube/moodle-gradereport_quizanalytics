@@ -137,7 +137,7 @@ if (!empty($table)) {
   echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
 }
 $html = '<div class="showanalytics">
-                    <div class="tabbable">
+                    <div class="tabbable parentTabs">
                         <ul class="nav nav-tabs  ">
                             <li class="active">
                                 <a href="#tabs-1"><span class="last-attempt">Last </span>

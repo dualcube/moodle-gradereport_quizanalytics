@@ -16,9 +16,8 @@ class moodle_gradereport_quizanalytics_external extends external_api
         $quiz = $DB->get_record('quiz', array('id' => $quizid));
         $totalquizattempted = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ?", array($quizid));
         $usersgradedattempts = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ? AND userid = ?", array($quizid, $USER->id));
-        $totalnoofquestion = $DB->get_record_sql("SELECT COUNT(qs.id) as qnum FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND qs.quizid = ? AND q.qtype != ?", array($quizid, 'description'));
+        $totalnoofquestion = $DB->get_record_sql("SELECT COUNT(q.id) as qnum FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND qs.quizid = ? AND q.qtype != ?", array($quizid, 'description'));
         if (!empty($usersgradedattempts)) { 
-            $randomoverallhardnesscolor = $overallhardnessdata = $categorynamedata = $randomuserhardnesscolor = $usershardnessdata = $usercategorynamedata = $userscores = $quesmarks = $timechartdata = $timechartopt = $categoryname = $categorydata = $randomcolor = $overallhardness = $userhardness = $userswrongattemts = $wrongattemts = $lastattemptsummarydata = $lastattemptsummaryopt = $cutoffarray = $gradeanalysislables = $randomcolor = $gradeanalysisarray = $totalunattempted = $correctresponse = $incorrectresponse = $partialcorrectresponse = $queslabels = $queshardness = $wrongandunattemptd =$selectedquestionid = $hardestquesdatalabel = $totalquizattemptdata = $wrongandunattemptdata = $Nthattempt = $totalarray = array(); 
             function random_color_part()
             {
                 return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
@@ -27,17 +26,17 @@ class moodle_gradereport_quizanalytics_external extends external_api
             {
                 return random_color_part() . random_color_part() . random_color_part();
             }
-            $categorys = $DB->get_records_sql("SELECT qc.id, COUNT(qs.id) as qnum,
+            $categorys = $DB->get_records_sql("SELECT qc.id, COUNT(q.id) as qnum,
                 qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_bank_entries} qbe
-                WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND
+                WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND qbe.id = q.id AND
                 qs.quizid = ? AND q.qtype != ? GROUP BY qc.id", array($quizid, 'description'));
             if (!empty($categorys)) {
                 foreach ($categorys as $category) {
-                    $categoryname[] = $category->name;
-                    $categorydata[] = ($category->qnum) / 10;
+                    $categoryname[] = empty($category->name)?'category':$category->name;
+                    $chartdata[] =  empty(($category->qnum) / 10)?1:(($category->qnum) / 10);
                     $randomcolor[] = "#" . random_color();
-                    $correctattempts = $DB->get_records_sql("SELECT qattstep.id as qattstepid, quizatt.id as quizattid, qatt.questionid, qattstep.state, qattstep.sequencenumber FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid AND  qbe.questioncategoryid = qc.id AND quizatt.quiz = ? AND qattstep.questionattemptid  = ? AND q.qtype != ? AND qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($quizid, $category->id, 'description')); 
-                    $userscorrectattempts = $DB->get_records_sql("SELECT qattstep.id as qattstepid, quizatt.id as quizattid, qatt.questionid, qattstep.state, qattstep.sequencenumber FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid AND  qbe.questioncategoryid = qc.id AND quizatt.quiz = ? AND qattstep.questionattemptid  = ? AND q.qtype != ? AND quizatt.userid = ? AND qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($quizid, $category->id, 'description', $USER->id));
+                    $correctattempts = $DB->get_records_sql("SELECT qattstep.id as qattstepid, quizatt.id as quizattid, qatt.questionid, qattstep.state, qattstep.sequencenumber FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid AND  qbe.questioncategoryid = qc.id AND qbe.id = q.id AND quizatt.quiz = ? AND qattstep.questionattemptid  = ? AND q.qtype != ? AND qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($quizid, $category->id, 'description')); 
+                    $userscorrectattempts = $DB->get_records_sql("SELECT qattstep.id as qattstepid, quizatt.id as quizattid, qatt.questionid, qattstep.state, qattstep.sequencenumber FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid AND  qbe.questioncategoryid = qc.id AND qbe.id = q.id AND quizatt.quiz = ? AND qattstep.questionattemptid  = ? AND q.qtype != ? AND quizatt.userid = ? AND qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($quizid, $category->id, 'description', $USER->id));
                     $categoryattempts = $category->qnum * count($totalquizattempted);
                     $categoryuserattempts = $category->qnum * count($usersgradedattempts);
                     $wrongattemts[] = ($categoryattempts - count($correctattempts));
@@ -46,11 +45,12 @@ class moodle_gradereport_quizanalytics_external extends external_api
                     $userhardness[] = round(((($categoryuserattempts -  count($userscorrectattempts)) / $categoryuserattempts) * 100), 2);
                 }
             }
+            $chartlabels = $categoryname;
             /* questionpercat */
-            $questionpercategorydata = array('labels' => $categoryname, 'datasets' => array(array(
+            $questionpercategorydata = array('labels' => $chartlabels, 'datasets' => array(array(
                 'label'
                 => get_string('questionspercategory', 'gradereport_quizanalytics'),
-                'backgroundColor' => $randomcolor, 'data' => $categorydata
+                'backgroundColor' => $randomcolor, 'data' => $chartdata
             )));
             $questionpercategoryopt = array('legend' => array(
                 'display' => false,
@@ -70,14 +70,15 @@ class moodle_gradereport_quizanalytics_external extends external_api
                 }    
             } 
             $count = 0;
+            $randomcolor = $chartdata =$chartlabels = array();
             if (!empty($overallhardness)) {
                 foreach ($overallhardness as $key => $val) {
                     if ($wrongattemts[$key] > 0) {
                         if ($wrongattemts[$key] >= (($wrongattemts[$previous] * 20) / 100)) {
                             if ($count < 10) {
-                                $overallhardnessdata[] = $val;
-                                $categorynamedata[] = $categoryname[$key];
-                                $randomoverallhardnesscolor[] = "#" . random_color();
+                                $chartdata[] = $val;
+                                $chartlabels[] = $categoryname[$key];
+                                $randomcolor[] = "#" . random_color();
                                 $count++;
                             }
                         }
@@ -86,11 +87,11 @@ class moodle_gradereport_quizanalytics_external extends external_api
                 }
             } 
             $allusersdata = array(
-                'labels' => $categorynamedata, 'datasets' => array(
+                'labels' => $chartlabels, 'datasets' => array(
                     array(
                         'label' => get_string('hardness', 'gradereport_quizanalytics'),
-                        'backgroundColor' => $randomoverallhardnesscolor,
-                        'data' => $overallhardnessdata
+                        'backgroundColor' => $randomcolor,
+                        'data' => $chartdata
                     )
                 )
             );
@@ -112,14 +113,15 @@ class moodle_gradereport_quizanalytics_external extends external_api
                 } 
             }
             $count = 0;
+            $randomcolor = $chartdata = $chartlabels = array();
             if (!empty($userhardness)) {
                 foreach ($userhardness as $key => $val) {
                     if ($userswrongattemts[$key] > 0) {
                         if ($userswrongattemts[$key] >= (($userswrongattemts[$previouskey] * 20) / 100) ) {
                             if ($count < 10) {
-                                $usershardnessdata[] = $val;
-                                $usercategorynamedata[] = $categoryname[$key];
-                                $randomuserhardnesscolor[] = "#" . random_color();
+                                $chartdata[] = $val;
+                                $chartlabels[] = $categoryname[$key];
+                                $randomcolor[] = "#" . random_color();
                                 $count++;
                             }
                         }
@@ -128,10 +130,10 @@ class moodle_gradereport_quizanalytics_external extends external_api
                 }
             } 
             $loggedinuserdata = array(
-                'labels' => $usercategorynamedata, 'datasets' => array(
+                'labels' => $chartlabels, 'datasets' => array(
                     array(
                         'label' => get_string('hardness', 'gradereport_quizanalytics'),
-                        'backgroundColor' => $randomuserhardnesscolor, 'data' => $usershardnessdata
+                        'backgroundColor' => $randomcolor, 'data' => $chartdata
                     )
                 )
             );
@@ -147,15 +149,13 @@ class moodle_gradereport_quizanalytics_external extends external_api
             $totalattempted = $DB->get_records_sql("SELECT qatt.questionid, qattstep.state, qattstep.fraction, qatt.maxmark FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND quizatt.userid = ? AND quizatt.id = ? AND quizatt.quiz = ? AND qattstep.sequencenumber = 2", array($USER->id, $lastattemptid->id, $quizid));
             $rightattempt = $DB->get_records_sql("SELECT qatt.questionid, qattstep.state, qattstep.fraction, qatt.maxmark FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND quizatt.userid = ? AND quizatt.id = ? AND quizatt.quiz = ? AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')", array($USER->id, $lastattemptid->id, $quizid));
             $partialcorrectattempt = $DB->get_records_sql("SELECT qatt.questionid, qattstep.state, qattstep.fraction, qatt.maxmark FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND quizatt.userid = ? AND quizatt.id = ? AND quizatt.quiz = ? AND (qattstep.state = 'gradedpartial' OR qattstep.state = 'mangrpartial')", array($USER->id, $lastattemptid->id, $quizid));
-            $count = 0;
+            $count = $totaluserscores = $totalquesmarks = 0;
             if (!empty($partialcorrectattempt)) {
                 foreach ($partialcorrectattempt as $partialcorrect) {
                     $count++;
-                    $userscores[] = $partialcorrect->fraction;
-                    $quesmarks[] = $partialcorrect->maxmark;
+                    $totaluserscores = $totaluserscores + $partialcorrect->fraction;
+                    $totalquesmarks = $totalquesmarks + $partialcorrect->maxmark;
                 }
-                $totaluserscores = array_sum($userscores);
-                $totalquesmarks = array_sum($quesmarks);
                 $partiallycorrect = $count * ((($totaluserscores / $totalquesmarks) * 100) / 100);
             } else {
                 $partiallycorrect = 0;
@@ -179,7 +179,7 @@ class moodle_gradereport_quizanalytics_external extends external_api
                                 count($totalattempted), count($rightattempt),
                                 count($partialcorrectattempt)
                             )
-                        ))
+                        ))  
                     );
                 } else {
                     $lastattemptsummarydata = array(
@@ -316,11 +316,11 @@ class moodle_gradereport_quizanalytics_external extends external_api
             );
             if (!empty($attemptcutoff)) {
                 foreach ($attemptcutoff as $torichcutoff) {
-                    $Nthattempt[] = $torichcutoff->attempt;
+                    $attemptresult[] = $torichcutoff->attempt;
                 }
             } 
-            if (!empty($Nthattempt)) {
-                $averageattempt = array_sum($Nthattempt) / count($Nthattempt);
+            if (!empty($attemptresult)) {
+                $averageattempt = array_sum($attemptresult) / count($attemptresult);
             } else {
                 $averageattempt = 0;
             }
@@ -372,6 +372,7 @@ class moodle_gradereport_quizanalytics_external extends external_api
                 'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13))
             );
             /* gradeanalysis */
+            $chartdata = $chartlabels = array();
             if ($CFG->gradereport_quizanalytics_globalboundary == 1) {
                 $gradeboundary = explode(",", ($CFG->gradereport_quizanalytics_gradeboundary));
                 if (!empty($gradeboundary)) {
@@ -379,12 +380,12 @@ class moodle_gradereport_quizanalytics_external extends external_api
                         $grades = explode("-", $gradeboundary);
                         $mingrade = ($grades[0] * $quiz->grade) / 100;
                         $maxgrade = ($grades[1] * $quiz->grade) / 100;
-                        $gradeanalysislables[] = $mingrade . " - " . $maxgrade;
+                        $chartlabels[] = $mingrade . " - " . $maxgrade;
                         $randomcolor[] = "#" . random_color();
                         $userrecords = $DB->get_record_sql(
                             "SELECT COUNT(qg.id) as numofstudents FROM {quiz_grades} qg, {quiz} q WHERE q.id = qg.quiz AND qg.quiz = ? AND qg.grade BETWEEN ? AND ?", array($quizid, $mingrade, $maxgrade)
                         );
-                        $gradeanalysisarray[] = $userrecords->numofstudents;
+                        $chartdata[] = $userrecords->numofstudents;
                     }
                 }
                 
@@ -394,19 +395,19 @@ class moodle_gradereport_quizanalytics_external extends external_api
                     foreach ($feedbackrecs as $feedbackrec) {
                         $mingrade = round($feedbackrec->mingrade);
                         $maxgrade = round($feedbackrec->maxgrade) - 1; 
-                        $gradeanalysislables[] = $mingrade . " - " . $maxgrade;
+                        $chartlabels[] = $mingrade . " - " . $maxgrade;
                         $randomcolor[] = "#" . random_color(); 
                         $userrecords = $DB->get_record_sql(
                             "SELECT COUNT(qg.id) as numofstudents FROM {quiz_grades} qg, {quiz} q WHERE q.id = qg.quiz AND qg.quiz = ? AND qg.grade BETWEEN ? AND ?", array($quizid, $mingrade, $maxgrade)
                         ); 
-                        $gradeanalysisarray[] = $userrecords->numofstudents;
+                        $chartdata[] = $userrecords->numofstudents;
                     }
                 } 
             }
-            $gradeanalysisdata = array('labels' => $gradeanalysislables, 'datasets' => array(
+            $gradeanalysisdata = array('labels' => $chartlabels, 'datasets' => array(
                 array(
                     'label' => get_string('noofstudents', 'gradereport_quizanalytics'),
-                    'backgroundColor' => $randomcolor, 'data' => $gradeanalysisarray
+                    'backgroundColor' => $randomcolor, 'data' => $chartdata
                 )
             ));
             $gradeanalysisopt = array(
@@ -426,61 +427,62 @@ class moodle_gradereport_quizanalytics_external extends external_api
                     } else {
                         $sequencenumber = 2;
                     }
-                     $totalcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedright' OR qas.state = 'mangrright')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                     $usercorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedright' OR qas.state = 'mangrright')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
                     );
-                    $totalincorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedwrong' OR qas.state = 'mangrwrong')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                    $userincorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedwrong' OR qas.state = 'mangrwrong')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
                     );
-                    $totalpartialcorrectresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedpartial' OR qas.state = 'mangrpartial')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
+                    $userpartialresponse = $DB->get_record_sql( "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND quizatt.userid = ? AND (qas.state = 'gradedpartial' OR qas.state = 'mangrpartial')", array($sequencenumber, $quizid, $totalquestion->id,$USER->id)
                     );
-                    $unattempted = count($usersgradedattempts) - ($totalcorrectresponse->qnum + $totalincorrectresponse->qnum + $totalpartialcorrectresponse->qnum);
-                    $totalunattempted[] = $unattempted;
-                    $correctresponse[] = $totalcorrectresponse->qnum;
-                    $incorrectresponse[] = $totalincorrectresponse->qnum;
-                    $partialcorrectresponse[] = $totalpartialcorrectresponse->qnum;
-                    $queslabels[] = "Q" . $count;
-                    $wrongandunattemptd[] = $unattempted + $totalincorrectresponse->qnum; 
-                    $queshardness[] = round((($unattempted + $totalincorrectresponse->qnum) / count($totalquizattempted)) * 100, 2); 
+                    $userunattempted[] = count($usersgradedattempts) - ($usercorrectresponse->qnum + $userincorrectresponse->qnum + $userpartialresponse->qnum);
+                    $unattempted = count($totalquizattempted) - ($usercorrectresponse->qnum + $userincorrectresponse->qnum + $userpartialresponse->qnum);
+                    $correctresponse[] = $usercorrectresponse->qnum;
+                    $incorrectresponse[] = $userincorrectresponse->qnum;
+                    $partialresponse[] = $userpartialresponse->qnum;
+                    $questionlabels[] = "Q" . $count;
+                    $negativeattemptd[] = $unattempted + $userincorrectresponse->qnum; 
+                    $queshardness[] = round((($unattempted + $userincorrectresponse->qnum) / count($totalquizattempted)) * 100, 2); 
                     $selectedquestionid[] = "Q" . $count . "," . $totalquestion->id;
                     $count++;
                 }
             }
             if(!empty($queshardness))
                 arsort($queshardness);
-            $maxwrunkeys = array_keys($queshardness, max($queshardness));
-            if (!empty($maxwrunkeys)) {
-                foreach ($maxwrunkeys as $maxwrunkey) {
-                    $previous = $maxwrunkey;
+            $maxhardness = array_keys($queshardness, max($queshardness));
+            if (!empty($maxhardness)) {
+                foreach ($maxhardness as $maxhardnesskey) {
+                    $previous = $maxhardnesskey;
                     break;
                 }
             } 
             $count = 0;
             if (!empty($queshardness)) {
                 foreach ($queshardness as $key => $val) {
-                    if ($wrongandunattemptd[$key] > 0) { 
-                        if ($wrongandunattemptd[$key] >= (($wrongandunattemptd[$previous] * 20) / 100)) {
+                    if ($negativeattemptd[$key] > 0) { 
+                        if ($negativeattemptd[$key] >= (($negativeattemptd[$previous] * 20) / 100)) {
                             if ($count < 10) {
-                                $hardestquesdatalabel[] = $queslabels[$key];
+                                $hardestquesdatalabel[] = $questionlabels[$key];
                                 $totalquizattemptdata[] = count($totalquizattempted);
-                                $wrongandunattemptdata[] = $wrongandunattemptd[$key];
+                                $negativeattemptdata[] = $negativeattemptd[$key];
                                 $count++;
                             }
                         }
                     }
                     $previous = $key;
                 }
-            }             $hardestquesdata = array('labels' => $hardestquesdatalabel, 'datasets' => array(
+            }
+            $hardestquesdata = array('labels' => $hardestquesdatalabel, 'datasets' => array(
                 array(
                     'label' => get_string('totalquizattempt', 'gradereport_quizanalytics'),
                     'backgroundColor' => "#8e5ea2", 'data' => $totalquizattemptdata
                 ),
                 array(
                     'label' => get_string('wrongandunattemptd', 'gradereport_quizanalytics'),
-                    'backgroundColor' => "#EB2838", 'data' => $wrongandunattemptdata
+                    'backgroundColor' => "#EB2838", 'data' => $negativeattemptdata
                 )
             ));
             $hardestquesopt = array('title' => array('display' => false, 'text' => get_string('hardestquestion', 'gradereport_quizanalytics')), 'legend' => array('display' => true, 'position' => 'bottom', 'labels' => array('boxWidth' => 13)), 'barPercentage' => 1.0, 'categoryPercentage' => 1.0);
             /*Quesanalysis*/
-            $quesanalysisdata = array('labels' => $queslabels, 'datasets' => array(
+            $quesanalysisdata = array('labels' => $questionlabels, 'datasets' => array(
                 array(
                     'data' => $correctresponse, 'borderColor' => "#3e95cd", 'fill' => false,
                     'label' => get_string('correct', 'gradereport_quizanalytics')
@@ -490,11 +492,11 @@ class moodle_gradereport_quizanalytics_external extends external_api
                     'label' => get_string('incorrect', 'gradereport_quizanalytics')
                 ),
                 array(
-                    'data' => $partialcorrectresponse, 'borderColor' => "#3cba9f",
+                    'data' => $partialresponse, 'borderColor' => "#3cba9f",
                     'fill' => false, 'label' => get_string('partialcorrect', 'gradereport_quizanalytics')
                 ),
                 array(
-                    'data' => $totalunattempted, 'borderColor' => "#c45850", 'fill' => false,
+                    'data' => $userunattempted, 'borderColor' => "#c45850", 'fill' => false,
                     'label' => get_string('unattempted', 'gradereport_quizanalytics')
                 )
             ));
