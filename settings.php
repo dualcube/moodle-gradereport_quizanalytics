@@ -35,7 +35,6 @@ if (is_siteadmin()) {
             PARAM_INT
         )
     );
-
     $settings->add(
         new admin_setting_configcheckbox(
             'gradereport_quizanalytics_globalboundary',
@@ -44,7 +43,6 @@ if (is_siteadmin()) {
             1
         )
     );
-
     $settings->add(
         new admin_setting_configtextarea(
             'gradereport_quizanalytics_gradeboundary',
@@ -54,4 +52,3 @@ if (is_siteadmin()) {
         )
     );
 }
-?>

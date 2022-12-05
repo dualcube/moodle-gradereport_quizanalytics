@@ -22,7 +22,7 @@
  * @copyright Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//index
+// Index.
 $string['action'] = 'Action';
 $string['attemptsummary'] = 'Attempt Summary';
 $string['myprogress'] = 'My Progress and Predictions';
@@ -57,14 +57,14 @@ $string['loggedinuserdes'] = 'Lets have a look the categories you have fared not
 $string['scorbrpercent'] = 'Scores by Percentage (All Users)';
 $string['gradeanalysisdes'] = 'Number of users in each percentage (score percentage) group.';
 $string['quesananalysisdes'] = 'The curves here depict how the users fared in each question. Clicking on the circles dedicated to each question will show the question itself along with explanation and correct answer.';
-//settings
+// Settings.
 $string['gradeboundary'] = 'Grade Boundary';
 $string['gradeboundarydes'] = "The grade boundaries are ranges set by the admin which will be displayed on the scores's stats graph.";
 $string['setglobal'] = 'Set Globally';
 $string['setglobaldes'] = 'Set Grade Boundary For All Quiz. This when checked rewrites the individual grade boundary settings for each quiz.';
 $string['setcutoff'] = 'Set Cut Off';
 $string['cutoffdes'] = 'Set Cut Off percentage (%) for all the quiz. This will be used for predictive analysis graph.';
-// externallib
+// Externallib.
 $string['noofquestionattempt'] = 'Number of Questions Attempted';
 $string['noofquestionunattempt'] = 'Number of Questions Unattempted';
 $string['noofrightans'] = 'Number of Right Answers';
@@ -90,7 +90,7 @@ $string['unattempted'] = 'Unattempted';
 $string['score'] = 'Score';
 $string['cutoffscore'] = 'Cut Off Score';
 $string['timetaken'] = 'Attempts Snapshot (Time Taken: ';
-//analytic.js
+// Analytic.js.
 $string['zeroattempt'] = 'Please attempt at least one question.';
 $string['hardestcategories'] = 'Hardest Categories';
 $string['hardestcategoriespercentage'] = 'Hardness in percentage (%)';
@@ -99,4 +99,3 @@ $string['cutOffscore'] = 'Cut Off Score';
 $string['score'] = 'Score';
 $string['questionnumber'] = 'Question Number';
 $string['questionreview'] = "(Click to Review Question & Last Attempt)";
-?>

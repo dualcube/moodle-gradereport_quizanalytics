@@ -31,9 +31,12 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                                 {key:'questionnumber', component:'gradereport_quizanalytics'},
                                 {key:'questionreview', component:'gradereport_quizanalytics'},
                             ];
-                        allQuestions = totalData.allQuestions;
+                        allQuestions = totalData.allQuestions.length ==0 ? console.log(totalData) : totalData.allQuestions;
+                        if(totalData.quizid)
                         quizid = totalData.quizid;
+                        if(totalData.url)
                         rooturl = totalData.url;
+                        if(totalData.lastUserQuizAttemptID)
                         lastUserQuizAttemptID = totalData.lastUserQuizAttemptID; 
                         $("#page-grade-report-quizanalytics-index").find(".btn-navbar").on("click",function() {
                             $(this).toggleClass("active-drop");
@@ -62,13 +65,13 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                             event.stopPropagation();
                             window.open($(this).attr('href'), '_self');
                         }); 
-                        $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").hide();
-                        $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").hide();
-                        $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").show();
+                        $(".showanalytics").find(".parentTabs").find("span.last-attempt").hide();
+                        $(".showanalytics").find("#tabs-1").find("p.last-attempt-des").hide();
+                        $(".showanalytics").find("#tabs-1").find("p.attempt-des").show();
                         if (totalData.userAttempts > 1) {
-                            $(".showanalytics").find(".parentTabs").find("span.lastattemptsummary").show();
-                            $(".showanalytics").find("#tabs-1").find("p.lastattemptsummarydes").show();
-                            $(".showanalytics").find("#tabs-1").find("p.attemptsummarydes").hide();
+                            $(".showanalytics").find(".parentTabs").find("span.last-attempt").show();
+                            $(".showanalytics").find("#tabs-1").find("p.last-attempt-des").show();
+                            $(".showanalytics").find("#tabs-1").find("p.attempt-des").hide();
                         }
                         setTimeout(function () {
                             $(".showanalytics").find("ul.nav-tabs a").click(function () {
@@ -85,13 +88,13 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                         }, 100);
                         $(".showanalytics").css("display", "block");
                         if (totalData.quizAttempt != 1) {
-                            $("#tabs-2").find("ul").find("li").find("span.subtab1").show();
-                            $("#tabs-2").find("ul").find("li").find("span.subtab2").hide();
+                            $("#tabs-2").find("ul").find("li").find("span.improvementcurve").show();
+                            $("#tabs-2").find("ul").find("li").find("span.peerperformance").hide();
                             $("#subtab21").find(".subtabmix").show();
                             $("#subtab21").find(".subtabtimechart").hide();
                         } else {
-                            $("#tabs-2").find("ul").find("li").find("span.subtab1").hide();
-                            $("#tabs-2").find("ul").find("li").find("span.subtab2").show();
+                            $("#tabs-2").find("ul").find("li").find("span.improvementcurve").hide();
+                            $("#tabs-2").find("ul").find("li").find("span.peerperformance").show();
                             $("#subtab21").find(".subtabmix").hide();
                             $("#subtab21").find(".subtabtimechart").show();
                         }
@@ -208,8 +211,8 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                             });
                             if (totalData.lastAttemptSummary.data != 0 && totalData.lastAttemptSummary.opt != 0) {
                                 $(".showanalytics").find(".unattempted").hide();
-                                $(".showanalytics").find("#lastattemptsummary").show();
-                                var chartConvention = document.getElementById("lastattemptsummary");
+                                $(".showanalytics").find("#lastAttempt").show();
+                                var chartConvention = document.getElementById("lastAttempt");
                                 chartConvention.height = 100;
                                 var chartConvention1 = chartConvention.getContext('2d');
                                 if (lastAttemptSummary !== undefined) {
@@ -242,8 +245,8 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                                 });
                             } 
                             else {
-                                $(".showanalytics").find("#lastattemptsummary").hide();
-                                $(".showanalytics").find("#lastattemptsummary").parent().append('<p class="unattempted"><b>' + s[0] + '</b></p>');
+                                $(".showanalytics").find("#lastAttempt").hide();
+                                $(".showanalytics").find("#lastAttempt").parent().append('<p class="unattempted"><b>' + s[0] + '</b></p>');
                             }
                             var option = {
                                 tooltips: {
@@ -460,7 +463,6 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                         }
                     };
                 }
-
             });
             $("#viewanalytic").one("click", function () {
                 $(".showanalytics").find("canvas").each(function () {
