@@ -31,7 +31,7 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                                 {key:'questionnumber', component:'gradereport_quizanalytics'},
                                 {key:'questionreview', component:'gradereport_quizanalytics'},
                             ];
-                        allQuestions = totalData.allQuestions.length ==0 ? console.log(totalData) : totalData.allQuestions;
+                        allQuestions = totalData.allQuestions.length == 0 ? console.log(totalData) : totalData.allQuestions;
                         if(totalData.quizid)
                         quizid = totalData.quizid;
                         if(totalData.url)
@@ -104,7 +104,6 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                             });
                         }
                         str.get_strings(stringFetch).done(function(s){
-                            console.log(s[0]);
                             $('.attemptssnapshot').html('');
                             $.each(totalData.attemptssnapshot.data, function (key, value) {
                                 var option = {
@@ -209,7 +208,7 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                                 data: totalData.loggedInUser.data,
                                 options: Options
                             });
-                            if (totalData.lastAttemptSummary.data != 0 && totalData.lastAttemptSummary.opt != 0) {
+                            if (totalData.lastAttemptSummary.data != null && totalData.lastAttemptSummary.opt != null) {
                                 $(".showanalytics").find(".unattempted").hide();
                                 $(".showanalytics").find("#lastAttempt").show();
                                 var chartConvention = document.getElementById("lastAttempt");
