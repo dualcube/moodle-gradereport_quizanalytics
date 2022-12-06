@@ -27,4 +27,4 @@ $plugin->version   = 2022041900;        // The current plugin version (Date: YYY
 $plugin->requires  = 2022041200;        // Requires this Moodle version.
 $plugin->component = 'gradereport_quizanalytics'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.6 (Build: 2022120500)';
+$plugin->release   = '2.0 (Build: 2022120500)';
