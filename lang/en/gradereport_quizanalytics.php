@@ -88,7 +88,6 @@ $string['incorrect'] = 'Incorrect';
 $string['partialcorrect'] = 'Partial Correct';
 $string['unattempted'] = 'Unattempted';
 $string['score'] = 'Score';
-$string['cutoffscore'] = 'Cut Off Score';
 $string['timetaken'] = 'Attempts Snapshot (Time Taken: ';
 // Analytic.js.
 $string['zeroattempt'] = 'Please attempt at least one question.';
