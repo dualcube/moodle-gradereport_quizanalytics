@@ -335,9 +335,6 @@ class moodle_gradereport_quizanalytics_external extends external_api {
         } else {
             $averageattempt = 0;
         }
-        for ($i = 0; $i <= round($averageattempt); $i++) {
-            $cutoffarray[] = round((($quiz->sumgrades * $CFG->gradereport_quizanalytics_cutoff) / 100), 2);
-        }
         $usersattempts = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE  state = 'finished' AND quiz = ? AND userid = ?", array($quizid, $USER->id));
         $attemptnum = $scored = array(0);
         $count = 1;
@@ -351,6 +348,9 @@ class moodle_gradereport_quizanalytics_external extends external_api {
             }
             $count++;
         }
+        for ($i = 0; $i < $count; $i++) {
+            $cutoffarray[] = round((($quiz->sumgrades * $CFG->gradereport_quizanalytics_cutoff) / 100), 2);
+        }
         if (round($averageattempt) >= $count) {
             for ($j = $count; $j <= round($averageattempt); $j++) {
                 array_push($attemptnum, $j);
@@ -360,7 +360,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
             'labels' => $attemptnum,
             'datasets' => array(
                 array(
-                    'label' => get_string('cutoffscore', 'gradereport_quizanalytics'),
+                    'label' => get_string('cutOffscore', 'gradereport_quizanalytics'),
                     'borderColor' => "#3e95cd",
                     'data' => $cutoffarray,
                     'fill' => true
