@@ -46,12 +46,6 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                                 $("#page-grade-report-quizanalytics-index").find(".nav-collapse").hide();
                             }
                         });
-                        $("#page-grade-report-quizanalytics-index .alyticsul li").each(function(index) {
-                            $(this).on("click",function() {
-                                $("#page-grade-report-quizanalytics-index .alyticsul li a").removeClass("active");
-                                $(this).find("a").addClass("active");
-                            });
-                        });
                         $("#page-grade-report-quizanalytics-index").find(".nav").find(".dropdown").on('click', function (event) {
                             $(this).toggleClass('open');
                         });
