@@ -18,41 +18,37 @@
  * Defines site settings for the quizanalytics gradebook report
  *
  * @package   gradereport_quizanalytics
- * @author Moumita Adak <moumita.a@dualcube.com>
+ * @author DualCube <admin@dualcube.com>
  * @copyright Dualcube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_cutoff',
-        get_string('setcutoff', 'gradereport_quizanalytics'),
-        get_string('cutoffdes', 'gradereport_quizanalytics'), 40, PARAM_INT));
-
-    $settings->add(new admin_setting_configcheckbox('gradereport_quizanalytics_globalboundary',
-        get_string('setglobal', 'gradereport_quizanalytics'),
-        get_string('setglobaldes', 'gradereport_quizanalytics'), 1));
-
-    $settings->add(new admin_setting_configtextarea('gradereport_quizanalytics_gradeboundary',
-        get_string('gradeboundary', 'gradereport_quizanalytics'),
-        get_string('gradeboundarydes', 'gradereport_quizanalytics'),
-        '0-60, 61-70, 71-80, 81-90, 91-100'));
-
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbappid',
-        get_string('enterfbappid', 'gradereport_quizanalytics'),
-        get_string('fbappiddes', 'gradereport_quizanalytics'), 'Empty'));
-
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_apiversion',
-        get_string('apiversion', 'gradereport_quizanalytics'),
-        get_string('apiversiondes', 'gradereport_quizanalytics'), 'Empty'));
-
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
-        get_string('fbsharetitle', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledes', 'gradereport_quizanalytics'), 'Title'));
-
-    $settings->add(new admin_setting_configtext('gradereport_quizanalytics_fbsharetitle',
-        get_string('fbsharetitle', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledes', 'gradereport_quizanalytics'),
-        get_string('fbsharetitledefault', 'gradereport_quizanalytics')));
+if (is_siteadmin()) {
+    $settings->add(
+        new admin_setting_configtext(
+            'gradereport_quizanalytics_cutoff',
+            get_string('setcutoff', 'gradereport_quizanalytics'),
+            get_string('cutoffdes', 'gradereport_quizanalytics'),
+            40,
+            PARAM_INT
+        )
+    );
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'gradereport_quizanalytics_globalboundary',
+            get_string('setglobal', 'gradereport_quizanalytics'),
+            get_string('setglobaldes', 'gradereport_quizanalytics'),
+            1
+        )
+    );
+    $settings->add(
+        new admin_setting_configtextarea(
+            'gradereport_quizanalytics_gradeboundary',
+            get_string('gradeboundary', 'gradereport_quizanalytics'),
+            get_string('gradeboundarydes', 'gradereport_quizanalytics'),
+            '0-60, 61-70, 71-80, 81-90, 91-100'
+        )
+    );
 }

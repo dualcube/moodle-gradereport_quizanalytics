@@ -18,15 +18,13 @@
  * Version details for the quizanalytics gradebook report
  *
  * @package   gradereport_quizanalytics
- * @author Moumita Adak <moumita.a@dualcube.com>
+ * @author DualCube <admin@dualcube.com>
  * @copyright  Dualcube (https://dualcube.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2022032400;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014051200;        // Requires this Moodle version
+$plugin->version   = 2023050200;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2021051700;        // Requires this Moodle version.
 $plugin->component = 'gradereport_quizanalytics'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.2 (Build: 2022032400)';
+$plugin->release   = '2.1 (Build: 2023050200)';

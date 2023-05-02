@@ -15,24 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines capabilities for the gradebook quizanalytics report
- *
+ * services for the quizanalytics gradebook report
  * @package   gradereport_quizanalytics
  * @author DualCube <admin@dualcube.com>
  * @copyright  Dualcube (https://dualcube.com)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$capabilities = array(
-    'gradereport/quizanalytics:view' => array(
-        'riskbitmask' => RISK_PERSONAL,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+$services = array(
+    'moodle_gradereport_quizanalytics' => array(
+        'functions' => array('moodle_quizanalytics_analytic'),
+        'requiredcapability' => '',
+        'restrictedusers' => 0,
+        'enabled' => 1,
+    )
+);
+$functions = array(
+    'moodle_quizanalytics_analytic' => array(
+        'classname' => 'moodle_gradereport_quizanalytics_external',
+        'methodname' => 'quizanalytics_analytic',
+        'classpath' => 'grade/report/quizanalytics/externallib.php',
+        'description' => 'Get Analytics data',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true
+    )
 );
