@@ -50,7 +50,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
         $sql = "SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ?";
         $totalquizattempted = $DB->get_records_sql($sql, array($quizid));
         $usersgradedattempts = $DB->get_records_sql($sql." AND userid = ?", array($quizid, $USER->id));
-        $totalnoofquestion = $DB->get_record_sql("SELECT COUNT(q.id) as qnum FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND qs.quizid = ? AND q.qtype != ?", array($quizid, 'description'));
+        $totalnoofquestion = $DB->get_record_sql("SELECT COUNT(q.id) as qnum FROM {quiz_slots} qs, {question} q, {question_references} qr, {question_bank_entries} qbe, {question_versions} qv WHERE qr.component = 'mod_quiz' AND qr.questionarea = 'slot' AND qr.itemid = qs.id AND qbe.id = qr.questionbankentryid AND qv.questionbankentryid = qbe.id AND q.id = qv.questionid  AND qs.quizid = ? AND q.qtype != ?", array($quizid, 'description'));
         /**
          * Returns description of method parameters
          * @return str_pad
@@ -65,7 +65,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
         function random_color() {
             return random_color_part() . random_color_part() . random_color_part();
         }
-        $sql = "SELECT qc.id, COUNT(q.id) as qnum, qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE q.id = qs.id AND qbe.questioncategoryid = qc.id AND qbe.id = q.id AND qs.quizid = ? AND q.qtype != ? GROUP BY qc.id";
+        $sql = "SELECT qc.id, COUNT(q.id) as qnum, qc.name FROM {quiz_slots} qs, {question} q, {question_categories} qc, {question_references} qr, {question_bank_entries} qbe, {question_versions} qv WHERE qr.component = 'mod_quiz' AND qr.questionarea = 'slot' AND qr.itemid = qs.id AND qbe.id = qr.questionbankentryid AND qv.questionbankentryid = qbe.id AND q.id = qv.questionid  AND qbe.questioncategoryid = qc.id AND qs.quizid = ? AND q.qtype != ? GROUP BY qc.id";
         $categorys = $DB->get_records_sql($sql, array($quizid, 'description'));
         $sql = "SELECT qattstep.id as qattstepid, quizatt.id as quizattid, qatt.questionid, qattstep.state, qattstep.sequencenumber FROM {quiz_attempts} quizatt, {question_attempts} qatt, {question_attempt_steps} qattstep, {question} q, {question_categories} qc, {question_bank_entries} qbe WHERE qatt.questionusageid = quizatt.uniqueid AND qattstep.questionattemptid = qatt.id AND q.id = qatt.questionid AND  qbe.questioncategoryid = qc.id AND qbe.id = q.id AND quizatt.quiz = ? AND qattstep.questionattemptid  = ? AND q.qtype != ? AND qattstep.sequencenumber >= 2 AND (qattstep.state = 'gradedright' OR qattstep.state = 'mangrright')";
         foreach ($categorys as $category) {
@@ -421,7 +421,8 @@ class moodle_gradereport_quizanalytics_external extends external_api {
             'legend' => array('display' => false, 'position' => 'bottom', 'labels' => array('boxWidth' => 13))
         );
         /* quesanalysis */
-        $totalquestions = $DB->get_records_sql("SELECT qs.id, q.qtype FROM {quiz_slots} qs, {question} q WHERE q.id = qs.id AND qs.quizid= ? AND q.qtype != ?", array($quizid, 'description'));
+        $totalquestions = $DB->get_records_sql("SELECT qs.id, q.qtype FROM {quiz_slots} qs, {question} q, {question_references} qr, {question_bank_entries} qbe, {question_versions} qv WHERE qr.component = 'mod_quiz' AND qr.questionarea = 'slot' AND qr.itemid = qs.id AND qbe.id = qr.questionbankentryid AND qv.questionbankentryid = qbe.id AND q.id = qv.questionid  AND qs.quizid= ? AND q.qtype != ?", array($quizid, 'description'));
+        // echo print_r($totalquestions);
         $count = 1;
         $sql = "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND";
         foreach ($totalquestions as $totalquestion) {
