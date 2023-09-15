@@ -1,7 +1,7 @@
 define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
     return {
         analytic: function () {
-            var user_id, lastAttemptSummary, loggedInUser, mixChart, allUsers,questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, rooturl, lastUserQuizAttemptID;
+            var userID, lastAttemptSummary, loggedInUser, mixChart, allUsers,questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, rooturl, lastUserQuizAttemptID;
             var attemptsSnapshotArray = [];
             Chart.plugins.register({
                 beforeDraw: function (chartInstance) {
@@ -29,15 +29,15 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
             }
             $(".viewanalytic").click(function () {
                 var quizid = $(this).data('quiz_id');
-                user_id = -1;
+                userID = -1;
                 if(document.getElementById('userSelect') != undefined)
-                    user_id = document.getElementById('userSelect').value;
+                    userID = document.getElementById('userSelect').value;
                 var promises = ajax.call([
                     {
                         methodname: 'moodle_quizanalytics_analytic',
                         args: { 
                             quizid: quizid,
-                            user_id: user_id
+                            user_id: userID
                         },
                     }
                 ]);
