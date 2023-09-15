@@ -1,7 +1,7 @@
 define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
     return {
         analytic: function () {
-            var lastAttemptSummary, loggedInUser, mixChart, allUsers,questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, quizid, rooturl, userid, lastUserQuizAttemptID;
+            var userID, lastAttemptSummary, loggedInUser, mixChart, allUsers,questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, rooturl, lastUserQuizAttemptID;
             var attemptsSnapshotArray = [];
             Chart.plugins.register({
                 beforeDraw: function (chartInstance) {
@@ -10,12 +10,35 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                     chartConvention.fillRect(0, 0, chartInstance.chart.width, chartInstance.chart.height);
                 }
             });
+            const userSelect = document.getElementById('userSelect');
+            const viewAnalyticsLink = document.querySelector('.viewanalytic');
+            if(userSelect){
+                if (userSelect.value === '-1') {
+                    viewAnalyticsLink.style.pointerEvents = 'none';
+                    viewAnalyticsLink.style.color = '#999';
+                }
+                userSelect.addEventListener('change', function () {
+                    if (userSelect.value === '-1') {
+                        viewAnalyticsLink.style.pointerEvents = 'none';
+                        viewAnalyticsLink.style.color = '#999';
+                    } else {
+                        viewAnalyticsLink.style.pointerEvents = 'auto';
+                        viewAnalyticsLink.style.color = '';
+                    }
+                });
+            }
             $(".viewanalytic").click(function () {
                 var quizid = $(this).data('quiz_id');
+                userID = -1;
+                if(document.getElementById('userSelect') != undefined)
+                    userID = document.getElementById('userSelect').value;
                 var promises = ajax.call([
                     {
                         methodname: 'moodle_quizanalytics_analytic',
-                        args: { quizid: quizid },
+                        args: { 
+                            quizid: quizid,
+                            user_id: userID
+                        },
                     }
                 ]);
                 promises[0].done(function (data) {
