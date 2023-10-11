@@ -1,5 +1,11 @@
-define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
+define(['jquery', 'core/ajax', 'core/str', 'gradereport_quizanalytics/datatables'], function ($, ajax, str, dt) {
     return {
+        init: function () {
+            $("table").DataTable({
+                "paging": true,
+                "pageLength": 5
+            });
+        },
         analytic: function () {
             var userID, lastAttemptSummary, loggedInUser, mixChart, allUsers,questionPerCategories, timeChart, gradeAnalysis, quesAnalysis, hardestQuestions, allQuestions, rooturl, lastUserQuizAttemptID;
             var attemptsSnapshotArray = [];
@@ -10,28 +16,34 @@ define(['jquery', 'core/ajax' , 'core/str'], function ($, ajax, str) {
                     chartConvention.fillRect(0, 0, chartInstance.chart.width, chartInstance.chart.height);
                 }
             });
-            const userSelect = document.getElementById('userSelect');
-            const viewAnalyticsLink = document.querySelector('.viewanalytic');
-            if(userSelect){
-                if (userSelect.value === '-1') {
-                    viewAnalyticsLink.style.pointerEvents = 'none';
-                    viewAnalyticsLink.style.color = '#999';
-                }
-                userSelect.addEventListener('change', function () {
+            const userSelects = document.querySelectorAll('#userSelect');
+            const viewAnalyticsLinks = document.querySelectorAll(".viewanalytic");
+            userSelects.forEach((userSelect) => {
+                const viewAnalyticsLink = userSelect.parentNode.parentNode.querySelector(".viewanalytic");
+
+                // Dynamic styling for viewanalytics link based on #userSelect
+                if (viewAnalyticsLink && userSelect) {
+                    // Set the viewanalytic link un-clickable for first time
                     if (userSelect.value === '-1') {
                         viewAnalyticsLink.style.pointerEvents = 'none';
                         viewAnalyticsLink.style.color = '#999';
-                    } else {
-                        viewAnalyticsLink.style.pointerEvents = 'auto';
-                        viewAnalyticsLink.style.color = '';
                     }
-                });
-            }
+                    userSelect.addEventListener('change', function () {
+                        if (userSelect.value === '-1') {
+                            viewAnalyticsLink.style.pointerEvents = 'none';
+                            viewAnalyticsLink.style.color = '#999';
+                        } else {
+                            viewAnalyticsLink.style.pointerEvents = 'auto';
+                            viewAnalyticsLink.style.color = '';
+                        }
+                    });
+                }
+            });
             $(".viewanalytic").click(function () {
                 var quizid = $(this).data('quiz_id');
-                userID = -1;
-                if(document.getElementById('userSelect') != undefined)
-                    userID = document.getElementById('userSelect').value;
+                const [viewAnalytics] = $(this);
+                const userSelect = viewAnalytics.parentNode.parentNode.querySelector("#userSelect");
+                userID = userSelect ? userSelect.value : -1;
                 var promises = ajax.call([
                     {
                         methodname: 'moodle_quizanalytics_analytic',

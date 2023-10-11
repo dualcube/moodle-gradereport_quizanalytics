@@ -28,11 +28,10 @@ $courseid = required_param('id', PARAM_INT);
 $userid   = optional_param('userid', $USER->id, PARAM_INT);
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/grade/report/quizanalytics/index.php', array('id' => $courseid)));
 $PAGE->requires->css('/grade/report/quizanalytics/css/frontend.css', true);
+$PAGE->requires->css('/grade/report/quizanalytics/css/datatables.css', true);
 $PAGE->requires->js('/grade/report/quizanalytics/js/Chart.js', true);
 $PAGE->requires->js_call_amd('gradereport_quizanalytics/analytic', 'analytic');
-$page = optional_param('page', 0, PARAM_INT);
-$perpage = optional_param('perpage', 5, PARAM_INT);  // How many per page.
-$baseurl = new moodle_url($CFG->wwwroot . '/grade/report/quizanalytics/index.php', array('id' => $courseid, 'perpage' => $perpage));
+$PAGE->requires->js_call_amd('gradereport_quizanalytics/analytic', 'init');
 // Basic access checks.
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     throw new moodle_exception('nocourseid');
@@ -92,12 +91,8 @@ $quizcount = 0;
 $getquizrecords = $DB->get_records('quiz', array('course' => $courseid));
 if (isset($getquizrecords)) {
     $quizcount = count($getquizrecords);
-    $getquizrec = array_chunk($getquizrecords, $perpage);
+    $getquiz = $getquizrecords;
 }
-if (!empty($getquizrec)) {
-    $getquiz = $getquizrec[$page];
-}
-echo '<div class="analytic-quiz-table-search-section"><form method="post"><input type="search" name="analytic_quiz_search_input" class="analytic-quiz-search-input" placeholder="Search Quiz " aria-hidden="true"><label class="analytic-quiz-search"><button type="submit" name="analytics_quiz_search"><i class="fa fa-search"></i></button></label></form></div>';
 $table = new html_table();
 if (!$getquiz) {
     echo $OUTPUT->heading(get_string('noquizfound', 'gradereport_quizanalytics'));
@@ -110,13 +105,6 @@ if (!$getquiz) {
     $table->head[] = get_string('student_select', 'gradereport_quizanalytics');
     $table->head[] = get_string('action', 'gradereport_quizanalytics');
     foreach ($getquiz as $getquizkey => $getquizval) {
-      if(isset($_POST["analytic_quiz_search_input"]) && !empty(trim($_POST["analytic_quiz_search_input"]))){
-        $search_quiz = $_POST["analytic_quiz_search_input"];
-        if (stripos($getquizval->name, $search_quiz) === false) {
-          continue;
-        }
-        
-      }
       if(!$is_student) {
         $getquizattemptsnotgraded = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NULL AND quiz = ?", array($getquizval->id));
       } else {
@@ -144,7 +132,7 @@ if (!$getquiz) {
         $row[] = "<a href='" . $quizviewurl . "'>" . format_text($getquizval->name, "", $qanalyticsformatoptions) . "</a>";
         $row[] = count($getquizattempts);
         if(!$is_student){
-          $attepomted_users = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ?", array($getquizval->id));
+          $attepomted_users = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND attempt = 1 AND quiz = ?", array($getquizval->id));
           $select = "<select id='userSelect'><option value='-1'>" . get_string('user_select', 'gradereport_quizanalytics') . "</option>";
           foreach($attepomted_users as $user){
             $select .= "<option value='" . $user->userid . "'>" . get_complete_user_data('id', $user->userid)->username . "</option>";
@@ -164,7 +152,6 @@ if (!empty($table)) {
     echo html_writer::start_tag('div', array('class' => 'no-overflow display-table'));
     echo html_writer::table($table);
     echo html_writer::end_tag('div');
-    echo $OUTPUT->paging_bar($quizcount, $page, $perpage, $baseurl);
 }
 $html = '<div class="showanalytics">
                     <div class="tabbable parentTabs">
