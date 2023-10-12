@@ -143,7 +143,7 @@ if (!$getquiz) {
         if (count($getquizattemptsnotgraded) == count($getquizattempts)) {
           $row[] = get_string('notgraded', 'gradereport_quizanalytics');
         } else {
-            $row[] = "<a href='#' id='viewanalytic' class='viewanalytic' data-url='" . $CFG->wwwroot . "' data-quiz_id='" . $getquizval->id . "' data-course_id='" . $courseid . "'>" . get_string('viewanalytics', 'gradereport_quizanalytics') . "</a>";
+            $row[] = "<a " . ($is_student ? "" : "style='pointer-events: none; color: #999' ") . "href='#' id='viewanalytic' class='viewanalytic' data-url='" . $CFG->wwwroot . "' data-quiz_id='" . $getquizval->id . "' data-course_id='" . $courseid . "'>" . get_string('viewanalytics', 'gradereport_quizanalytics') . "</a>";
         }
         $table->data[] = $row;
     }

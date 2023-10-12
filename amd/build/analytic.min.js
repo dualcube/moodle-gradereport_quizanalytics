@@ -20,19 +20,14 @@ define(['jquery', 'core/ajax', 'core/str', 'gradereport_quizanalytics/datatables
             const viewAnalyticsLinks = document.querySelectorAll(".viewanalytic");
             userSelects.forEach((userSelect) => {
                 const viewAnalyticsLink = userSelect.parentNode.parentNode.querySelector(".viewanalytic");
-
                 // Dynamic styling for viewanalytics link based on #userSelect
                 if (viewAnalyticsLink && userSelect) {
-                    // Set the viewanalytic link un-clickable for first time
-                    if (userSelect.value === '-1') {
-                        viewAnalyticsLink.style.pointerEvents = 'none';
-                        viewAnalyticsLink.style.color = '#999';
-                    }
-                    userSelect.addEventListener('change', function () {
+                    userSelect.addEventListener("change", function () {
                         if (userSelect.value === '-1') {
                             viewAnalyticsLink.style.pointerEvents = 'none';
                             viewAnalyticsLink.style.color = '#999';
-                        } else {
+                        }
+                        else {
                             viewAnalyticsLink.style.pointerEvents = 'auto';
                             viewAnalyticsLink.style.color = '';
                         }
