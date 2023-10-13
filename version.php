@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$plugin->version   = 2023091500;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2021051700;        // Requires this Moodle version.
+$plugin->version = 2023101100; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires = 2021051700; // Requires this Moodle version.
 $plugin->component = 'gradereport_quizanalytics'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.2.1 (Build: 2023091500)';
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.2.1 (Build: 2023091500)';
