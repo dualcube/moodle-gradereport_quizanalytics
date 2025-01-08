@@ -82,9 +82,6 @@ print_grade_page_head(
   get_string('pluginname', 'gradereport_quizanalytics') . ' - ' . $USER->firstname
     . ' ' . $USER->lastname
 );
-$qanalyticsformatoptions = new stdClass();
-$qanalyticsformatoptions->noclean = true;
-$qanalyticsformatoptions->overflowdiv = false;
 $getquiz = array();
 $getquizrec = array();
 $quizcount = 0;
@@ -129,7 +126,7 @@ if (!$getquiz) {
             $quizviewurl = "#";
         }
         $row = array();
-        $row[] = "<a href='" . $quizviewurl . "'>" . format_text($getquizval->name, "", $qanalyticsformatoptions) . "</a>";
+        $row[] = "<a href='" . $quizviewurl . "'>" . format_text($getquizval->name, FORMAT_MOODLE) . "</a>";
         $row[] = count($getquizattempts);
         if(!$is_student){
           $attepomted_users = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND attempt = 1 AND quiz = ?", array($getquizval->id));
