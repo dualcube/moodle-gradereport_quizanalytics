@@ -49,7 +49,7 @@ define(['jquery', 'core/ajax', 'core/str', 'gradereport_quizanalytics/datatables
                     }
                 ]);
                 promises[0].done(function (data) {
-                    var totalData = jQuery.parseJSON(data);
+                    var totalData = JSON.parse(data);
                     if (totalData) {    
                         var stringFetch =[
                                 {key:'zeroattempt', component:'gradereport_quizanalytics'},
