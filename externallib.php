@@ -330,7 +330,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
             );
         }
         /* mixchart */
-        $attemptcutoff = $DB->get_records_sql("SELECT * FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ?  AND sumgrades >= ? GROUP BY userid", array($quizid, (($quiz->sumgrades * $CFG->gradereport_quizanalytics_cutoff) / 100)));
+        $attemptcutoff = $DB->get_records_sql("SELECT userid, MIN(attempt) AS attempt FROM {quiz_attempts} WHERE state = 'finished' AND sumgrades IS NOT NULL AND quiz = ?  AND sumgrades >= ? GROUP BY userid", array($quizid, (($quiz->sumgrades * $CFG->gradereport_quizanalytics_cutoff) / 100)));
         foreach ($attemptcutoff as $torichcutoff) {
             $attemptresult[] = $torichcutoff->attempt;
         }
@@ -428,7 +428,7 @@ class moodle_gradereport_quizanalytics_external extends external_api {
         $totalquestions = $DB->get_records_sql("SELECT qs.id, q.qtype FROM {quiz_slots} qs, {question} q, {question_references} qr, {question_bank_entries} qbe, {question_versions} qv WHERE qr.component = 'mod_quiz' AND qr.questionarea = 'slot' AND qr.itemid = qs.id AND qbe.id = qr.questionbankentryid AND qv.questionbankentryid = qbe.id AND q.id = qv.questionid  AND qs.quizid= ? AND q.qtype != ?", array($quizid, 'description'));
         // echo print_r($totalquestions);
         $count = 1;
-        $sql = "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades <> 'NULL' AND quizatt.quiz= ? AND qatt.questionid = ? AND";
+        $sql = "SELECT COUNT(qatt.id) as qnum FROM {question_attempts} qatt, {quiz_attempts} quizatt, {question_attempt_steps} qas WHERE qas.questionattemptid = qatt.id AND quizatt.uniqueid = qatt.questionusageid AND qas.sequencenumber = ? AND quizatt.sumgrades IS NOT NULL AND quizatt.quiz= ? AND qatt.questionid = ? AND";
         foreach ($totalquestions as $totalquestion) {
             if ($totalquestion->qtype == "essay") {
                  $sequencenumber = 3;
