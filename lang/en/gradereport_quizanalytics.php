@@ -19,17 +19,17 @@
  *
  * @package   gradereport_quizanalytics
  * @author DualCube <admin@dualcube.com>
- * @copyright Dualcube (https://dualcube.com)
+ * @copyright 2026 DualCube (https://dualcube.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 // Index.
 $string['action'] = 'Action';
 $string['attemptsummary'] = 'Attempt Summary';
 $string['student_select'] = 'Student';
-$string['user_select'] = 'Select User';
+$string['user_select'] = 'All students';
 $string['myprogress'] = 'My Progress and Predictions';
-$string['questioncategory'] = 'Question Categories&#39 Analysis';
-$string['questionstats'] = 'Scores&#39 & Questions&#39 Stats';
+$string['questioncategory'] = 'Question Categories&#39; Analysis';
+$string['questionstats'] = 'Scores&#39; & Questions&#39; Stats';
 $string['viewanalytics'] = 'View Analytics';
 $string['quesanalysis'] = 'Question Analysis';
 $string['noofstudents'] = 'Number of Students';
@@ -66,11 +66,29 @@ $string['setglobal'] = 'Set Globally';
 $string['setglobaldes'] = 'Set Grade Boundary For All Quiz. This when checked rewrites the individual grade boundary settings for each quiz.';
 $string['setcutoff'] = 'Set Cut Off';
 $string['cutoffdes'] = 'Set Cut Off percentage (%) for all the quiz. This will be used for predictive analysis graph.';
+$string['visibleanalytics'] = 'Visible analytics';
+$string['showattemptsummarytab'] = 'Show Attempt Summary tab';
+$string['showattemptsummarytabdes'] = 'Show the Attempt Summary / Last Attempt Summary tab.';
+$string['showmyprogresstab'] = 'Show My Progress and Predictions tab';
+$string['showmyprogresstabdes'] = 'Show the My Progress and Predictions tab '
+    . '(Improvement Curve, Hardest Question, Attempt Snapshot).';
+$string['showquestioncategorytab'] = 'Show Question Categories&#39; Analysis tab';
+$string['showquestioncategorytabdes'] = 'Show the Question Categories&#39; Analysis tab.';
+$string['showquestionstatstab'] = 'Show Scores&#39; & Questions&#39; Stats tab';
+$string['showquestionstatstabdes'] = 'Show the Scores&#39; & Questions&#39; Stats tab.';
+$string['customcss'] = 'Custom CSS';
+$string['customcssdes'] = 'CSS rules added here are injected on every Quiz Analytics page, after the plugin&#39;s '
+    . 'own stylesheet, so they can be used to restyle the report without editing the plugin files - changes made '
+    . 'here survive future plugin updates.';
+$string['showonreviewpage'] = 'Show on the quiz attempt review page';
+$string['showonreviewpagedes'] = 'When enabled, a compact version of the analytics for the reviewed attempt is '
+    . 'also shown on the quiz&#39;s own attempt review page, for users who have permission to view it.';
 // Externallib.
 $string['noofquestionattempt'] = 'Number of Questions Attempted';
 $string['noofquestionunattempt'] = 'Number of Questions Unattempted';
 $string['noofrightans'] = 'Number of Right Answers';
 $string['noofpartialcorrect'] = 'Number of Partial Correct Answers';
+$string['noofwronganswers'] = 'Number of Wrong Answers';
 $string['accuaracyrate'] = 'Accuracy Rate : ';
 $string['impandpredicanalysis'] = 'Improvement Curve & Predictive Analysis';
 $string['peerscores'] = 'Peer Scores';
@@ -80,7 +98,7 @@ $string['avgscore'] = 'Average Score';
 $string['lowestscore'] = 'Lowest Score';
 $string['totalquizattempt'] = 'Total Attempts';
 $string['wrongandunattemptd'] = 'Unsuccessful Attempts';
-$string['hardestquestion'] = 'Hardest Questions';
+$string['hardestquestionschart'] = 'Hardest Questions';
 $string['questionspercategory'] = 'Questions per Category';
 $string['hardcatalluser'] = 'Hard Categories (All Users)%';
 $string['hardness'] = 'Hardness (%)';
@@ -100,3 +118,11 @@ $string['cutOffscore'] = 'Cut Off Score';
 $string['score'] = 'Score';
 $string['questionnumber'] = 'Question Number';
 $string['questionreview'] = "(Click to Review Question & Last Attempt)";
+// Events.
+$string['eventgradereportviewed'] = 'Quiz analytics report viewed';
+// Privacy.
+$string['privacy:metadata:core_question'] = 'The Quiz Analytics report reads question attempt data '
+    . '(e.g. which questions were answered correctly, incorrectly, or left unattempted, and how long '
+    . 'attempts took) to build its charts for teachers and admins. It also reads quiz attempt records '
+    . '(grade, state, timing) owned by the quiz activity. This report never stores, exports, or deletes '
+    . 'any of this data itself - the question engine and the quiz activity remain responsible for it.';

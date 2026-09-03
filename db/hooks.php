@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Services for the quizanalytics gradebook report.
+ * Hook callback registrations for the quizanalytics gradebook report.
  *
  * @package   gradereport_quizanalytics
  * @author    DualCube <admin@dualcube.com>
@@ -25,22 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$services = [
-    'moodle_gradereport_quizanalytics' => [
-        'functions' => ['moodle_quizanalytics_analytic'],
-        'requiredcapability' => '',
-        'restrictedusers' => 0,
-        'enabled' => 1,
-    ],
-];
-
-$functions = [
-    'moodle_quizanalytics_analytic' => [
-        'classname' => 'gradereport_quizanalytics\external\get_analytics',
-        'methodname' => 'execute',
-        'description' => 'Get Analytics data',
-        'type' => 'read',
-        'ajax' => true,
-        'loginrequired' => true,
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_footer_html_generation::class,
+        'callback' => [\gradereport_quizanalytics\local\hook_callbacks::class, 'before_footer_html_generation'],
     ],
 ];
